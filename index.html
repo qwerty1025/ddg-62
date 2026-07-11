@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>點點綠排班戰略系統 v10.0 (UX 視覺升級版)</title>
+    <title>點點綠排班戰略系統 v10.3 (靈活視圖與色彩版)</title>
     
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -20,37 +20,39 @@
         .font-mono { font-family: 'JetBrains Mono', monospace; }
 
         /* 捲軸與容器 */
-        .custom-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
+        .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         
-        /* 列印專用樣式 - 放大與平衡 */
+        /* 列印專用樣式 */
         @media print {
             @page { size: A4 portrait; margin: 8mm; }
             body * { visibility: hidden; }
             #print-area, #print-area * { visibility: visible; }
-            #print-area { position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: white; overflow: visible; }
+            #print-area { position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: white; overflow: visible; padding: 0 !important; border: none !important;}
             .no-print { display: none !important; }
-            .print-grid-layout { display: grid; grid-template-columns: 1fr; gap: 24px; } 
+            .print-grid-layout { display: grid !important; grid-template-columns: 1fr !important; gap: 20px; } 
         }
         
         .print-card { border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; margin-bottom: 12px; page-break-inside: avoid; background: white; }
-        .print-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; font-size: 0.9rem; }
+        .print-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; font-size: 0.85rem; }
         
-        /* 提升日曆格子高度，容納更大的字體 */
-        .print-day { border: 1px solid #e2e8f0; min-height: 95px; padding: 4px; display: flex; flex-direction: column; position: relative; justify-content: flex-start; border-radius: 4px; transition: all 0.2s; }
+        /* 提升日曆格子高度 */
+        .print-day { border: 1px solid #e2e8f0; min-height: 90px; padding: 4px; display: flex; flex-direction: column; position: relative; justify-content: flex-start; border-radius: 4px; transition: all 0.2s; }
         .print-day:hover { border-color: #94a3b8; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .print-active { background-color: #f0fdf4; border-color: #86efac; }
 
-        /* 標記樣式全面升級 (字級放大、易讀性提升) */
-        .holiday-badge { font-size: 11px; color: #b91c1c; background-color: #fee2e2; border-radius: 4px; padding: 2px 4px; font-weight: 700; line-height: 1.2; border: 1px solid #fca5a5; display: inline-block; margin-bottom: 2px;}
-        .event-badge { font-size: 11px; color: #b45309; background-color: #fef3c7; border-radius: 4px; padding: 2px 4px; line-height: 1.2; font-weight: 700; border: 1px solid #fcd34d; display: inline-block; margin-bottom: 2px;}
-        
-        /* 希望廣場主題週次：支援多行顯示，不再截斷 */
-        .square-badge { font-size: 10px; border-radius: 4px; padding: 3px 5px; font-weight: 700; line-height: 1.35; text-align: left; width: 100%; margin-top: 2px; border-left-width: 3px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        /* 標記樣式 */
+        .holiday-badge { font-size: 10px; color: #b91c1c; background-color: #fee2e2; border-radius: 4px; padding: 1px 4px; font-weight: 700; border: 1px solid #fca5a5; display: inline-block; margin-bottom: 2px;}
+        .event-badge { font-size: 10px; color: #b45309; background-color: #fef3c7; border-radius: 4px; padding: 1px 4px; font-weight: 700; border: 1px solid #fcd34d; display: inline-block; margin-bottom: 2px;}
+        .square-badge { font-size: 9px; border-radius: 4px; padding: 2px 4px; font-weight: 700; line-height: 1.2; text-align: left; width: 100%; margin-top: 2px; border-left-width: 3px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 
-        /* 班表區塊放大 */
-        .shift-block { font-size: 13px; font-weight: 900; padding: 4px; border-radius: 4px; width: 100%; margin-top: 4px; }
-        .shift-note { font-size: 10px; padding: 2px 4px; border-radius: 4px; font-weight: 500; margin-top: 2px; line-height: 1.2; }
+        /* 班表區塊 */
+        .shift-block { font-size: 12px; font-weight: 900; padding: 3px; border-radius: 4px; width: 100%; margin-top: auto; display: flex; flex-direction: column; align-items: center; justify-content: center;}
+        .shift-note { font-size: 9px; padding: 2px; border-radius: 4px; font-weight: 500; margin-top: 2px; line-height: 1.1; width: 100%; }
+
+        /* 兩側浮動按鈕隱藏控制 */
+        .toggle-btn { opacity: 0.5; transition: opacity 0.3s; }
+        .toggle-btn:hover { opacity: 1; }
 
         [v-cloak] { display: none; }
     </style>
@@ -59,24 +61,25 @@
 
 <div id="app" v-cloak class="h-screen flex flex-col relative">
 
-    <header class="h-16 bg-slate-900 text-white flex items-center justify-between px-6 shadow-md z-50 shrink-0 no-print">
-        <div class="flex items-center gap-6">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center font-bold text-white shadow-lg text-xl"><i class="fa-solid fa-cow"></i></div>
-                <h1 class="font-bold text-xl tracking-wide hidden md:block">排班戰略系統 <span v-if="isDBConnected" class="text-xs text-emerald-400 ml-2 font-normal"><i class="fa-cloud fa-solid"></i> 已連線</span></h1>
+    <header class="h-14 bg-slate-900 text-white flex items-center justify-between px-4 shadow-md z-50 shrink-0 no-print">
+        <div class="flex items-center gap-4">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-orange-500 rounded flex items-center justify-center font-bold text-white shadow"><i class="fa-solid fa-cow"></i></div>
+                <h1 class="font-bold text-lg tracking-wide hidden md:block">排班戰略系統 <span v-if="isDBConnected" class="text-[10px] text-emerald-400 ml-2 font-normal"><i class="fa-cloud fa-solid"></i> 已連線</span></h1>
             </div>
             
-            <div class="bg-slate-800 p-1.5 rounded-lg flex gap-2 overflow-x-auto custom-scrollbar">
-                <button @click="currentView='myschedule'" :class="navClass('myschedule')" class="px-4 py-1.5 text-sm rounded-md transition font-bold whitespace-nowrap"><i class="fa-solid fa-print"></i> 日曆調度與列印</button>
-                <button @click="currentView='analysis'" :class="navClass('analysis')" class="px-4 py-1.5 text-sm rounded-md transition font-bold whitespace-nowrap"><i class="fa-solid fa-chart-pie"></i> 戰略分析</button>
+            <div class="bg-slate-800 p-1 rounded-md flex gap-1 overflow-x-auto custom-scroll">
+                <button @click="currentView='myschedule'" :class="navClass('myschedule')" class="px-3 py-1 text-sm rounded transition font-bold whitespace-nowrap"><i class="fa-solid fa-print"></i> 日曆與戰略總覽</button>
+                <button @click="currentView='analysis'" :class="navClass('analysis')" class="px-3 py-1 text-sm rounded transition font-bold whitespace-nowrap"><i class="fa-solid fa-chart-pie"></i> 雙季度分析</button>
             </div>
         </div>
 
-        <div class="flex items-center gap-4">
-            <button @click="showInput = !showInput" class="text-slate-400 hover:text-white transition" title="載入 CSV"><i class="fa-solid fa-file-import text-lg"></i></button>
+        <div class="flex items-center gap-3">
+            <button @click="showInput = !showInput" class="text-slate-400 hover:text-white transition" title="載入 CSV"><i class="fa-solid fa-file-import"></i></button>
         </div>
     </header>
 
+    <!-- 原始資料載入器 -->
     <div v-if="showInput" class="absolute inset-0 bg-slate-900/90 z-[60] flex items-center justify-center p-4 no-print">
         <div class="bg-white w-full max-w-4xl rounded-xl shadow-2xl h-[80vh] flex flex-col p-6">
             <div class="flex justify-between items-center mb-4 border-b pb-4">
@@ -90,12 +93,12 @@
         </div>
     </div>
 
-    <main class="flex-grow p-4 overflow-hidden relative bg-slate-100 flex flex-col">
-
-        <div v-if="currentView === 'analysis'" class="h-full bg-white rounded-xl shadow-sm overflow-hidden flex flex-col border border-slate-200">
-            <div class="p-5 border-b bg-slate-50 flex justify-between items-center">
-                <h3 class="font-bold text-lg text-slate-700"><i class="fa-solid fa-chart-line text-emerald-500 mr-2"></i>雙季度出攤攤租戰略面板</h3>
-                <div class="text-sm text-slate-500 font-medium bg-white px-3 py-1 rounded-full border shadow-sm">🌱 基準費用：$800/場 | 10~19場 ($720/場) | 20場以上 ($680/場)</div>
+    <!-- 雙季度戰略分析面板 -->
+    <main v-if="currentView === 'analysis'" class="flex-grow p-4 overflow-hidden relative bg-slate-100 flex flex-col">
+        <div class="h-full bg-white rounded-xl shadow-sm overflow-hidden flex flex-col border border-slate-200">
+            <div class="p-4 border-b bg-slate-50 flex justify-between items-center">
+                <h3 class="font-bold text-lg text-slate-700"><i class="fa-solid fa-chart-line text-emerald-500 mr-2"></i>雙季度出攤攤租戰略面板 (僅計算點點綠)</h3>
+                <div class="text-xs text-slate-500 font-medium bg-white px-3 py-1 rounded-full border shadow-sm">🌱 基準費用：$800/場 | 10~19場 ($720/場) | 20場以上 ($680/場)</div>
             </div>
             <div class="overflow-auto p-4 custom-scroll flex-grow">
                 <table class="w-full text-sm text-left border-collapse">
@@ -131,103 +134,142 @@
                 </table>
             </div>
         </div>
+    </main>
 
-        <div v-if="currentView === 'myschedule'" class="h-full flex flex-col md:flex-row gap-4 relative">
+    <!-- 班表列印與日曆調度頁面 (三欄式佈局) -->
+    <div v-if="currentView === 'myschedule'" class="h-full flex flex-col md:flex-row overflow-hidden relative bg-slate-100">
+        
+        <!-- 左側隱藏時的呼叫按鈕 -->
+        <button v-if="!showLeftSidebar" @click="showLeftSidebar = true" class="absolute top-4 left-4 bg-slate-800 text-white font-bold px-3 py-2 rounded-lg text-sm z-30 shadow-lg no-print toggle-btn">
+            <i class="fa-solid fa-chevron-right mr-1"></i> 設定
+        </button>
+
+        <!-- 左側：調度與列印設定 (Sidebar 1) -->
+        <div v-show="showLeftSidebar" class="w-full md:w-[280px] lg:w-[300px] bg-white p-4 border-r border-slate-200 h-full overflow-y-auto no-print shrink-0 custom-scroll z-20 transition-all">
+            <div class="flex justify-between items-center mb-4 border-b pb-3">
+                <h3 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-sliders text-indigo-500 mr-2"></i>調度與設定</h3>
+                <button @click="showLeftSidebar = false" class="bg-slate-100 hover:bg-slate-200 text-slate-600 w-7 h-7 rounded-full transition flex items-center justify-center" title="隱藏左側面板"><i class="fa-solid fa-chevron-left"></i></button>
+            </div>
             
-            <button v-if="!showSidebar" @click="showSidebar = true" class="md:hidden absolute top-4 left-4 bg-slate-800 text-white font-bold px-4 py-2 rounded-lg text-sm z-30 shadow-lg no-print">
-                <i class="fa-solid fa-sliders"></i> 打開控制面板
-            </button>
+            <div class="mb-5">
+                <label class="block text-xs font-bold mb-1.5 text-slate-700">1. 目標廠商篩選</label>
+                <select v-model="printTarget" class="w-full border-2 border-slate-200 rounded-lg p-2 text-sm bg-slate-50 focus:border-indigo-500 focus:bg-white transition outline-none font-bold text-slate-800">
+                    <option v-for="s in uniqueStaffList" :value="s">{{s}}</option>
+                </select>
+            </div>
 
-            <div v-show="showSidebar" class="w-full md:w-[340px] bg-white p-5 rounded-xl shadow-sm h-full overflow-y-auto no-print shrink-0 border border-slate-200 custom-scroll flex flex-col">
-                <div class="flex justify-between items-center mb-6 border-b pb-4">
-                    <h3 class="font-bold text-xl text-slate-800"><i class="fa-solid fa-sliders text-indigo-500 mr-2"></i>調度與列印設定</h3>
-                    <button @click="showSidebar = false" class="bg-slate-100 hover:bg-slate-200 text-slate-600 w-8 h-8 rounded-full transition flex items-center justify-center"><i class="fa-solid fa-chevron-left"></i></button>
+            <!-- P4 點點綠即時戰略計算 Widget -->
+            <div class="mb-5 bg-emerald-50 p-3 rounded-lg border border-emerald-200 shadow-sm">
+                <h4 class="font-bold text-emerald-800 mb-2 text-xs flex items-center"><i class="fa-solid fa-calculator mr-1"></i> P4 點點綠即時試算 (8~10月)</h4>
+                <div class="flex justify-between items-center mb-1.5 bg-white px-2 py-1.5 rounded shadow-sm">
+                    <span class="text-xs font-bold text-emerald-700">總排班數</span>
+                    <span class="font-black text-sm text-emerald-900">{{ p4Stats.count }} <span class="text-[10px] font-normal">場</span></span>
                 </div>
-                
-                <div class="mb-6">
-                    <label class="block text-sm font-bold mb-2 text-slate-700">1. 目標廠商篩選</label>
-                    <select v-model="printTarget" class="w-full border-2 border-slate-200 rounded-lg p-3 text-base bg-slate-50 focus:border-indigo-500 focus:bg-white transition outline-none font-bold text-slate-800">
-                        <option v-for="s in uniqueStaffList" :value="s">{{s}}</option>
-                    </select>
+                <div class="flex justify-between items-center bg-white px-2 py-1.5 rounded shadow-sm">
+                    <span class="text-xs font-bold text-emerald-700">預估費用</span>
+                    <span class="font-black text-sm text-emerald-900"><span class="text-[10px] font-normal">NT$</span> {{ p4Stats.cost.toLocaleString() }}</span>
                 </div>
-
-                <div class="mb-6">
-                    <label class="block text-sm font-bold mb-2 text-slate-700">2. 顯示月份 (可複選)</label>
-                    <div class="grid grid-cols-2 gap-2">
-                        <label v-for="m in allMonths" :key="m" class="flex items-center p-2 border-2 rounded-lg cursor-pointer transition select-none" :class="printMonths.includes(m) ? 'border-indigo-500 bg-indigo-50 text-indigo-800 font-bold' : 'border-slate-100 hover:border-slate-300 bg-slate-50 text-slate-600'">
-                            <input type="checkbox" :value="m" v-model="printMonths" class="hidden"> 
-                            <i class="fa-solid fa-calendar-days mr-2 opacity-50"></i> {{m}}
-                        </label>
-                    </div>
-                </div>
-
-                <div class="mb-6">
-                    <label class="block text-sm font-bold mb-2 text-slate-700">3. 表頭聯絡資訊 (列印用)</label>
-                    <textarea v-model="contactInfo" class="w-full border-2 border-slate-200 rounded-lg p-3 text-sm h-24 bg-slate-50 focus:border-indigo-500 focus:bg-white transition outline-none resize-none"></textarea>
-                </div>
-
-                <div class="mt-auto pt-4 border-t">
-                    <button @click="printNow" class="w-full bg-slate-800 hover:bg-black text-white py-4 rounded-xl font-bold shadow-lg transition text-lg flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-print"></i> 輸出為 A4 格式
-                    </button>
+                <div class="text-[9px] text-emerald-600 mt-1 text-right font-bold">
+                    (適用費率: ${{ p4Stats.rate }}/場)
                 </div>
             </div>
 
-            <div id="print-area" class="flex-grow bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-8 overflow-y-auto custom-scroll">
-                
-                <div class="flex justify-between items-end mb-8 border-b-4 border-slate-800 pb-4">
-                    <div>
-                        <h1 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight mb-2">{{ printTarget }} 出席戰略班表</h1>
-                        <pre class="text-base text-slate-600 font-sans whitespace-pre-wrap font-medium">{{ contactInfo }}</pre>
-                    </div>
-                    <div class="text-right no-print">
-                        <span class="text-xs text-slate-400 bg-slate-100 px-3 py-1 rounded-full"><i class="fa-solid fa-mouse-pointer"></i> 點擊日曆區塊可編輯事件與班表</span>
-                    </div>
+            <div class="mb-5">
+                <label class="block text-xs font-bold mb-1.5 text-slate-700">2. 顯示月份 (可複選)</label>
+                <div class="grid grid-cols-2 gap-1.5">
+                    <label v-for="m in allMonths" :key="m" class="flex items-center p-1.5 border-2 rounded cursor-pointer transition select-none text-xs" :class="printMonths.includes(m) ? 'border-indigo-500 bg-indigo-50 text-indigo-800 font-bold' : 'border-slate-100 hover:border-slate-300 bg-slate-50 text-slate-600'">
+                        <input type="checkbox" :value="m" v-model="printMonths" class="hidden"> 
+                        <i class="fa-solid fa-calendar-days mr-1.5 opacity-50"></i> {{m}}
+                    </label>
                 </div>
+            </div>
 
-                <div class="grid grid-cols-1 gap-10 print-grid-layout">
-                    <div v-for="month in selectedMonthData" :key="month.label" class="print-card break-inside-avoid shadow-sm">
-                        
-                        <h3 class="text-2xl font-black text-center bg-slate-800 text-white py-2 mb-4 rounded-lg tracking-widest">{{ month.label }}</h3>
-                        
-                        <div>
-                            <div class="print-grid mb-2 border-b-2 border-slate-200 pb-2 font-bold text-slate-600 text-base">
-                                <div>星期一</div><div>星期二</div><div>星期三</div><div>星期四</div><div>星期五</div><div class="text-red-600">星期六</div><div class="text-red-600">星期日</div>
-                            </div>
-                            
-                            <div class="print-grid">
-                                <div v-for="d in month.days" :key="d.dateStr" class="print-day" :class="{'print-active': d.shift && d.shift.status !== 'leave', 'bg-slate-50 border-dashed border-slate-200': !d.isCurrent}">
-                                    
-                                    <div class="flex justify-between items-start w-full cursor-pointer hover:bg-slate-200/50 transition rounded-t p-1" @click.stop="d.isCurrent && openEditorA(d.dateStr)" title="新增/編輯特殊事件">
-                                        <div class="flex flex-col items-start max-w-[75%]">
-                                            <span v-if="d.isHoliday && d.isCurrent" class="holiday-badge">{{ d.holidayName }}</span>
-                                            <span v-if="d.isFarmEvent && d.isCurrent && printTarget === '五寮尖山羊乳'" class="event-badge text-blue-800 bg-blue-100 border-blue-300">{{ d.farmEventName }}</span>
-                                            <span v-if="d.customEventName && d.isCurrent" class="event-badge bg-indigo-100 text-indigo-800 border-indigo-300"><i class="fa-solid fa-thumbtack mr-1"></i>{{ d.customEventName }}</span>
-                                        </div>
-                                        <div class="text-right text-sm font-bold pt-0.5 pr-1" :class="d.isCurrent ? (d.isHoliday || d.isWeekend ? 'text-red-600' : 'text-slate-700') : 'text-slate-300'">{{ d.dayNum }}</div>
-                                    </div>
-                                    
-                                    <div v-if="d.isHopeSquare && d.isCurrent" class="square-badge pointer-events-none" :class="d.hopeSquareName.includes('新北市自籌') ? 'bg-purple-100 text-purple-900 border-purple-400' : 'bg-emerald-100 text-emerald-900 border-emerald-400'" :title="d.hopeSquareName">
-                                        <i class="fa-solid fa-leaf text-[9px]"></i> {{ d.hopeSquareName }}
-                                    </div>
+            <div class="mb-5">
+                <label class="block text-xs font-bold mb-1.5 text-slate-700">3. 表頭聯絡資訊 (列印用)</label>
+                <textarea v-model="contactInfo" class="w-full border-2 border-slate-200 rounded-lg p-2 text-xs h-20 bg-slate-50 focus:border-indigo-500 focus:bg-white transition outline-none resize-none"></textarea>
+            </div>
 
-                                    <div class="flex-grow flex flex-col justify-end p-1 mt-auto w-full">
-                                        <div v-if="d.shift" class="cursor-pointer hover:opacity-80 transition w-full" @click.stop="openEditorB(d.shift)" title="點擊編輯班表">
-                                            
-                                            <div class="shift-block text-center truncate" :class="d.shift.status === 'leave' ? 'bg-red-100 text-red-700 line-through border border-red-200' : 'bg-slate-800 text-white shadow'">
-                                                {{ d.shift.station }}
-                                            </div>
-                                            
-                                            <div v-if="d.shift.status === 'leave'" class="shift-note bg-red-600 text-white text-center font-bold">已請假</div>
-                                            <div v-if="d.shift.note && d.shift.status !== 'leave'" class="shift-note bg-amber-100 text-amber-800 border border-amber-200 text-center truncate">{{ d.shift.note }}</div>
+            <div class="mt-4 pt-4 border-t">
+                <button @click="printNow" class="w-full bg-slate-800 hover:bg-black text-white py-3 rounded-lg font-bold shadow transition text-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-print"></i> 列印為 A4 格式
+                </button>
+            </div>
+        </div>
+
+        <!-- 中間：雙排日曆排版區 -->
+        <div id="print-area" class="flex-grow p-4 md:p-6 overflow-y-auto custom-scroll relative">
+            
+            <!-- 列印大表頭與佈局切換 -->
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-6 border-b-4 border-slate-800 pb-3 gap-4">
+                <div>
+                    <h1 class="text-2xl md:text-3xl font-black text-slate-900 tracking-tight mb-1">{{ printTarget }} 出席戰略班表</h1>
+                    <pre class="text-sm text-slate-600 font-sans whitespace-pre-wrap font-medium">{{ contactInfo }}</pre>
+                </div>
+                
+                <!-- 動態視圖切換器 -->
+                <div class="flex items-center gap-2 no-print bg-slate-200 p-1.5 rounded-lg shadow-inner self-end md:self-auto">
+                    <span class="text-xs text-slate-500 font-bold px-2"><i class="fa-solid fa-layer-group"></i> 視圖</span>
+                    <button @click="calendarLayout = 1" :class="{'bg-white shadow-sm text-slate-800': calendarLayout === 1, 'text-slate-500': calendarLayout !== 1}" class="px-3 py-1 text-xs rounded font-bold transition">單排</button>
+                    <button @click="calendarLayout = 2" :class="{'bg-white shadow-sm text-slate-800': calendarLayout === 2, 'text-slate-500': calendarLayout !== 2}" class="px-3 py-1 text-xs rounded font-bold transition">雙排</button>
+                    <button @click="calendarLayout = 3" :class="{'bg-white shadow-sm text-slate-800': calendarLayout === 3, 'text-slate-500': calendarLayout !== 3}" class="px-3 py-1 text-xs rounded font-bold transition">三排</button>
+                </div>
+            </div>
+
+            <!-- 日曆網格：根據選擇動態調整欄位 -->
+            <div class="print-grid-layout grid gap-6" 
+                 :class="{
+                     'grid-cols-1': calendarLayout === 1, 
+                     'grid-cols-1 xl:grid-cols-2': calendarLayout === 2, 
+                     'grid-cols-1 lg:grid-cols-2 xl:grid-cols-3': calendarLayout === 3
+                 }">
+                <div v-for="month in selectedMonthData" :key="month.label" class="print-card shadow-sm break-inside-avoid">
+                    
+                    <h3 class="text-xl font-black text-center bg-slate-800 text-white py-1.5 mb-3 rounded tracking-widest">{{ month.label }}</h3>
+                    
+                    <div>
+                        <!-- 週一起始表頭 -->
+                        <div class="print-grid mb-1.5 border-b-2 border-slate-200 pb-1.5 font-bold text-slate-600 text-sm">
+                            <div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div class="text-red-600">六</div><div class="text-red-600">日</div>
+                        </div>
+                        
+                        <div class="print-grid">
+                            <div v-for="d in month.days" :key="d.dateStr" class="print-day" :class="{'print-active': d.shift && d.shift.status !== 'leave', 'bg-slate-50 border-dashed border-slate-200': !d.isCurrent}">
+                                
+                                <!-- 編輯器A：點擊上半部新增特殊事件/假日區塊 -->
+                                <div class="flex justify-between items-start w-full cursor-pointer hover:bg-slate-200/50 transition rounded-t p-0.5" @click.stop="d.isCurrent && openEditorA(d.dateStr)" title="新增/編輯特殊事件">
+                                    <div class="flex flex-col items-start max-w-[75%]">
+                                        <span v-if="d.isHoliday && d.isCurrent" class="holiday-badge">{{ d.holidayName }}</span>
+                                        <span v-if="d.isFarmEvent && d.isCurrent && printTarget === '五寮尖山羊乳'" class="event-badge text-blue-800 bg-blue-100 border-blue-300">{{ d.farmEventName }}</span>
+                                        <span v-if="d.customEventName && d.isCurrent" class="event-badge bg-indigo-100 text-indigo-800 border-indigo-300"><i class="fa-solid fa-thumbtack mr-0.5"></i>{{ d.customEventName }}</span>
+                                    </div>
+                                    <div class="text-right text-xs font-bold pt-0.5 pr-0.5" :class="d.isCurrent ? (d.isHoliday || d.isWeekend ? 'text-red-600' : 'text-slate-700') : 'text-slate-300'">{{ d.dayNum }}</div>
+                                </div>
+                                
+                                <!-- 希望廣場主題週次備註 -->
+                                <div v-if="d.isHopeSquare && d.isCurrent" class="square-badge pointer-events-none" :class="d.hopeSquareName.includes('新北市自籌') ? 'bg-purple-100 text-purple-900 border-purple-400' : 'bg-emerald-100 text-emerald-900 border-emerald-400'" :title="d.hopeSquareName">
+                                    <i class="fa-solid fa-leaf text-[8px]"></i> {{ d.hopeSquareName }}
+                                </div>
+
+                                <!-- 編輯器B：點擊下半部編輯或新增班表 -->
+                                <div class="flex-grow flex flex-col justify-end p-0.5 mt-auto w-full">
+                                    <div v-if="d.shift" class="cursor-pointer hover:opacity-80 transition w-full" @click.stop="openEditorB(d.shift)" title="點擊編輯班表">
+                                        
+                                        <!-- 色彩管理邏輯整合 -->
+                                        <div class="shift-block text-center truncate" :class="getShiftColorClass(d.shift)">
+                                            <span v-if="d.shift.locationType && d.shift.locationType !== '點點綠' && d.shift.status !== 'leave'" class="text-[8px] bg-white/30 px-1 rounded-sm mb-0.5 leading-none py-0.5 font-bold shadow-sm">{{ d.shift.locationType }}</span>
+                                            <span>{{ d.shift.station }}</span>
                                         </div>
                                         
-                                        <div v-else-if="d.isCurrent" class="w-full h-8 mt-1 cursor-pointer bg-slate-100 hover:bg-slate-200 border border-slate-200 border-dashed rounded transition flex items-center justify-center text-xs text-slate-400 hover:text-slate-600 font-bold opacity-0 hover:opacity-100" @click.stop="openAddShift(d.dateStr)">
-                                            <i class="fa-solid fa-plus mr-1"></i>排班
-                                        </div>
+                                        <div v-if="d.shift.status === 'leave'" class="shift-note bg-red-600 text-white text-center font-bold">已請假</div>
+                                        <div v-if="d.shift.note && d.shift.status !== 'leave'" class="shift-note bg-white/80 text-slate-800 border border-slate-300 text-center truncate shadow-sm" :title="d.shift.note">{{ d.shift.note }}</div>
                                     </div>
-
+                                    
+                                    <!-- 空白排班熱區 -->
+                                    <div v-else-if="d.isCurrent" class="w-full h-7 mt-1 cursor-pointer bg-slate-100 hover:bg-slate-200 border border-slate-200 border-dashed rounded transition flex items-center justify-center text-[10px] text-slate-400 hover:text-slate-600 font-bold opacity-0 hover:opacity-100" @click.stop="openAddShift(d.dateStr)">
+                                        <i class="fa-solid fa-plus mr-1"></i>排班
+                                    </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -235,7 +277,104 @@
             </div>
         </div>
 
-    </main>
+        <!-- 右側隱藏時的呼叫按鈕 -->
+        <button v-if="!showRightSidebar" @click="showRightSidebar = true" class="absolute top-4 right-4 bg-slate-800 text-white font-bold px-3 py-2 rounded-lg text-sm z-30 shadow-lg no-print toggle-btn">
+            <i class="fa-solid fa-list-check mr-1"></i> 統整列表
+        </button>
+
+        <!-- 右側：三大單位統整列表與資源回收桶 (Sidebar 2) -->
+        <div v-show="showRightSidebar" class="w-full md:w-[280px] lg:w-[320px] bg-white border-l border-slate-200 h-full overflow-y-auto no-print shrink-0 custom-scroll z-20 transition-all">
+            <div class="p-4 bg-slate-50 border-b border-slate-200 sticky top-0 z-10 flex justify-between items-center">
+                <div>
+                    <h3 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-list-check text-indigo-500 mr-2"></i>排班統整</h3>
+                    <p class="text-[10px] text-slate-500 mt-1">顯示 {{ printMonths.length }} 個選定月份</p>
+                </div>
+                <button @click="showRightSidebar = false" class="bg-slate-200 hover:bg-slate-300 text-slate-600 w-7 h-7 rounded-full transition flex items-center justify-center" title="隱藏右側面板"><i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+            
+            <div class="p-4 space-y-6">
+                
+                <!-- 統整區塊 1: 點點綠 -->
+                <div>
+                    <h4 class="font-bold text-sm text-slate-800 mb-2 border-b-2 border-slate-800 pb-1 flex justify-between">
+                        <span><i class="fa-solid fa-leaf text-slate-700 mr-1"></i> 點點綠</span>
+                        <span class="bg-slate-200 text-slate-800 text-[10px] px-2 rounded-full">{{ groupedSummary.dianDian.length }} 場</span>
+                    </h4>
+                    <ul class="text-xs space-y-2">
+                        <li v-if="groupedSummary.dianDian.length === 0" class="text-slate-400 italic">無排班資料</li>
+                        <li v-for="s in groupedSummary.dianDian" :key="s.id" class="bg-slate-50 p-2 rounded border border-slate-200 hover:border-slate-400 transition cursor-pointer" @click="openEditorB(s)">
+                            <div class="flex justify-between font-bold text-slate-700"><span>{{ s.date.substring(5) }}</span> <span>{{ s.station }}</span></div>
+                            <div v-if="s.note" class="text-[10px] text-slate-500 mt-1 truncate"><i class="fa-solid fa-comment-dots mr-1 text-slate-300"></i>{{ s.note }}</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- 統整區塊 2: 希望廣場 (黃色) -->
+                <div>
+                    <h4 class="font-bold text-sm text-slate-800 mb-2 border-b-2 border-yellow-400 pb-1 flex justify-between">
+                        <span><i class="fa-solid fa-sun text-yellow-500 mr-1"></i> 希望廣場</span>
+                        <span class="bg-yellow-100 text-yellow-800 text-[10px] px-2 rounded-full">{{ groupedSummary.hope.length }} 場</span>
+                    </h4>
+                    <ul class="text-xs space-y-2">
+                        <li v-if="groupedSummary.hope.length === 0" class="text-slate-400 italic">無排班資料</li>
+                        <li v-for="s in groupedSummary.hope" :key="s.id" class="bg-yellow-50/50 p-2 rounded border border-yellow-100 hover:border-yellow-300 transition cursor-pointer" @click="openEditorB(s)">
+                            <div class="flex justify-between font-bold text-yellow-900"><span>{{ s.date.substring(5) }}</span> <span>{{ s.station }}</span></div>
+                            <div v-if="s.note" class="text-[10px] text-slate-500 mt-1 truncate"><i class="fa-solid fa-comment-dots mr-1 text-slate-300"></i>{{ s.note }}</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- 統整區塊 3: 花博 (粉色) -->
+                <div>
+                    <h4 class="font-bold text-sm text-slate-800 mb-2 border-b-2 border-pink-400 pb-1 flex justify-between">
+                        <span><i class="fa-solid fa-seedling text-pink-500 mr-1"></i> 花博農民市集</span>
+                        <span class="bg-pink-100 text-pink-800 text-[10px] px-2 rounded-full">{{ groupedSummary.expo.length }} 場</span>
+                    </h4>
+                    <ul class="text-xs space-y-2">
+                        <li v-if="groupedSummary.expo.length === 0" class="text-slate-400 italic">無排班資料</li>
+                        <li v-for="s in groupedSummary.expo" :key="s.id" class="bg-pink-50/50 p-2 rounded border border-pink-100 hover:border-pink-300 transition cursor-pointer" @click="openEditorB(s)">
+                            <div class="flex justify-between font-bold text-pink-800"><span>{{ s.date.substring(5) }}</span> <span>{{ s.station }}</span></div>
+                            <div v-if="s.note" class="text-[10px] text-slate-500 mt-1 truncate"><i class="fa-solid fa-comment-dots mr-1 text-slate-300"></i>{{ s.note }}</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- 統整區塊 4: 特殊邀請 -->
+                <div>
+                    <h4 class="font-bold text-sm text-slate-800 mb-2 border-b-2 border-indigo-400 pb-1 flex justify-between">
+                        <span><i class="fa-solid fa-star text-indigo-500 mr-1"></i> 特殊邀請 / 其他</span>
+                        <span class="bg-indigo-100 text-indigo-800 text-[10px] px-2 rounded-full">{{ groupedSummary.others.length }} 場</span>
+                    </h4>
+                    <ul class="text-xs space-y-2">
+                        <li v-if="groupedSummary.others.length === 0" class="text-slate-400 italic">無排班資料</li>
+                        <li v-for="s in groupedSummary.others" :key="s.id" class="bg-indigo-50 p-2 rounded border border-indigo-100 hover:border-indigo-300 transition cursor-pointer" @click="openEditorB(s)">
+                            <div class="flex justify-between font-bold text-indigo-900">
+                                <span>{{ s.date.substring(5) }}</span> <span>{{ s.station }}</span>
+                            </div>
+                            <div v-if="s.note" class="text-[10px] text-slate-500 mt-1 truncate"><i class="fa-solid fa-comment-dots mr-1 text-slate-300"></i>{{ s.note }}</div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- 點點綠資源回收桶 (軟刪除復原) -->
+                <div class="mt-8 pt-4 border-t border-slate-200">
+                    <h4 class="font-bold text-sm text-slate-500 mb-2 flex justify-between items-center">
+                        <span><i class="fa-solid fa-trash-can mr-1"></i> 點點綠 刪除復原區</span>
+                        <span class="bg-slate-200 text-slate-600 text-[10px] px-2 rounded-full">{{ deletedSchedules.length }}</span>
+                    </h4>
+                    <ul class="text-xs space-y-1.5 max-h-32 overflow-y-auto custom-scroll pr-1">
+                        <li v-if="deletedSchedules.length === 0" class="text-slate-400 italic text-[10px]">無已刪除班表</li>
+                        <li v-for="s in deletedSchedules" :key="s.id" class="bg-red-50 p-1.5 rounded border border-red-100 flex justify-between items-center group">
+                            <span class="text-slate-500 line-through">{{ s.date.substring(5) }} {{ s.station }}</span>
+                            <button @click="restoreShift(s)" class="text-[9px] bg-red-100 text-red-600 px-2 py-0.5 rounded hover:bg-red-600 hover:text-white transition opacity-0 group-hover:opacity-100 font-bold">恢復</button>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
 </div>
 
 <script>
@@ -262,7 +401,11 @@
             const schedules = ref([]);
             const customEvents = ref({}); 
             const isDBConnected = ref(false);
-            const showSidebar = ref(true);
+            
+            // 面板與視圖控制
+            const showLeftSidebar = ref(true);
+            const showRightSidebar = ref(true);
+            const calendarLayout = ref(2); // 預設雙排視圖
 
             // 五寮尖山羊乳專屬教育事件 
             const farmEvents = {
@@ -270,7 +413,7 @@
                 '2026-07-20': '向日葵花海調度'
             };
 
-            // 115年(2026) 連續假期對照表 (國定假日確實標記)
+            // 115年(2026) 連續假期對照表
             const holidays2026 = {
                 '2026-01-01': '元旦', '2026-01-02': '元旦連假', '2026-01-03': '元旦連假', '2026-01-04': '元旦連假',
                 '2026-02-14': '春節連假', '2026-02-15': '春節連假', '2026-02-16': '除夕', '2026-02-17': '初一',
@@ -308,11 +451,19 @@
 
             const printTarget = ref('五寮尖山羊乳'); 
             const printMonths = ref(['2026-08', '2026-09', '2026-10', '2026-11', '2026-12']); 
-            const contactInfo = ref('【點點綠農業調度專線】\n陳宗賢管理模式執行單位\n0912-345-678');
+            const contactInfo = ref('【點點綠農業調度專線】\n0912-345-678');
 
             const navClass = (view) => currentView.value === view ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-700/50';
             
-            // CSV 解析邏輯
+            // ====== 色彩邏輯管理 ======
+            const getShiftColorClass = (shift) => {
+                if (shift.status === 'leave') return 'bg-red-100 text-red-700 line-through border border-red-200';
+                if (shift.locationType === '花博') return 'bg-pink-500 text-white shadow-sm';
+                if (shift.locationType === '希望廣場') return 'bg-yellow-400 text-yellow-900 shadow-sm';
+                if (shift.locationType === '特殊邀請') return 'bg-indigo-600 text-white shadow-sm';
+                return 'bg-slate-800 text-white shadow-sm'; // 點點綠預設
+            };
+
             const processCSV = () => {
                 const results = [];
                 const parsed = Papa.parse(csvInput.value, { header: false, skipEmptyLines: true });
@@ -351,7 +502,8 @@
                             staffs.forEach(s => {
                                 results.push({
                                     id: Math.random().toString(36).slice(2),
-                                    date, drawer: drawerKey, station: stationRaw, subStation: stationRaw.replace(drawerKey, ''), staff: s, status: 'normal'
+                                    date, drawer: drawerKey, station: stationRaw, subStation: stationRaw.replace(drawerKey, ''), staff: s, 
+                                    status: 'normal', locationType: '點點綠', isDeleted: false
                                 });
                             });
                         }
@@ -380,11 +532,75 @@
                 return [...new Set([...dataMonths, ...fullYearMonths])].sort();
             });
 
-            // ====== 戰略分析 ======
+            // ====== 統整面板資料：分組與資源回收 ======
+            const activeSchedules = computed(() => {
+                return schedules.value.filter(s => 
+                    s.staff === printTarget.value && 
+                    !s.isDeleted && 
+                    printMonths.value.includes(s.date.substring(0,7))
+                ).sort((a,b) => new Date(a.date) - new Date(b.date));
+            });
+
+            const groupedSummary = computed(() => {
+                const dianDian = [];
+                const expo = [];
+                const hope = [];
+                const others = [];
+                
+                activeSchedules.value.forEach(s => {
+                    const loc = s.locationType || '點點綠';
+                    if (loc === '點點綠') dianDian.push(s);
+                    else if (loc === '花博') expo.push(s);
+                    else if (loc === '希望廣場') hope.push(s);
+                    else others.push(s);
+                });
+                
+                return { dianDian, expo, hope, others };
+            });
+
+            const deletedSchedules = computed(() => {
+                return schedules.value.filter(s => 
+                    s.staff === printTarget.value && 
+                    s.isDeleted === true && 
+                    (s.locationType === '點點綠' || !s.locationType)
+                ).sort((a,b) => new Date(b.date) - new Date(a.date));
+            });
+
+            const restoreShift = (shift) => {
+                db.ref(`schedules/${shift.id}`).update({ isDeleted: false });
+                Swal.fire({ title: '已恢復班表', icon: 'success', toast: true, position: 'top-end', showConfirmButton: false, timer: 1500 });
+            };
+
+            // ====== 即時 P4 點點綠戰略試算 ======
+            const p4Stats = computed(() => {
+                if (!printTarget.value) return { count: 0, cost: 0, rate: 800 };
+                let count = 0;
+                schedules.value.forEach(s => {
+                    if (s.staff === printTarget.value && s.status !== 'leave' && !s.isDeleted) {
+                        const month = parseInt(s.date.substring(5, 7));
+                        const isDianDianGreen = s.locationType === '點點綠' || (!s.locationType && s.drawer);
+                        if (month >= 8 && month <= 10 && isDianDianGreen) {
+                            count++;
+                        }
+                    }
+                });
+                
+                let rate = 800;
+                if (count >= 20) rate = 680;
+                else if (count >= 10) rate = 720;
+                
+                return { count, cost: count * rate, rate };
+            });
+
+            // ====== 戰略分析 (總表) ======
             const analysisStats = computed(() => {
                 const stats = {};
                 schedules.value.forEach(s => {
-                    if (s.status === 'leave') return; 
+                    if (s.status === 'leave' || s.isDeleted) return; 
+                    
+                    const isDianDianGreen = s.locationType === '點點綠' || (!s.locationType && s.drawer);
+                    if (!isDianDianGreen) return; 
+
                     if (!stats[s.staff]) {
                         stats[s.staff] = { 
                             name: s.staff, 
@@ -429,7 +645,7 @@
                 return 'font-medium';
             };
 
-            // ====== 班表整合處理 (含週末紅字判定) ======
+            // ====== 班表整合處理 (過濾已刪除) ======
             const selectedMonthData = computed(() => {
                 if (!printTarget.value || printMonths.value.length === 0) return [];
                 return printMonths.value.sort().map(mStr => {
@@ -446,7 +662,7 @@
                         const dayOfWeek = new Date(y, m - 1, i).getDay();
                         const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
 
-                        const shift = schedules.value.find(s => s.staff === printTarget.value && s.date === dStr);
+                        const shift = schedules.value.find(s => s.staff === printTarget.value && s.date === dStr && !s.isDeleted);
                         const customEventName = customEvents.value[dStr] ? customEvents.value[dStr].name : '';
                         const isHoliday = !!holidays2026[dStr];
                         const holidayName = isHoliday ? holidays2026[dStr] : '';
@@ -491,14 +707,25 @@
 
             // ====== 編輯器 B：編輯班表 (備註/請假/刪除) ======
             const openEditorB = (shift) => {
+                const currentType = shift.locationType || (shift.drawer ? '點點綠' : '點點綠');
+                
                 Swal.fire({
-                    title: `🛠 編輯班表 - ${shift.station}`,
+                    title: `🛠 編輯班表`,
                     html: `
                         <div class="text-left text-sm mt-4">
-                            <label class="block font-bold mb-2 text-slate-700">✍️ 班表備註 (將顯示於日曆)：</label>
-                            <input id="swal-note" class="w-full border-2 p-3 rounded-lg mb-4 bg-slate-50 focus:border-indigo-500 outline-none font-bold text-slate-700" value="${shift.note || ''}" placeholder="例如：設備維護、下午到...">
-                            <label class="block font-bold mb-2 text-slate-700">🚦 出勤狀態切換：</label>
-                            <select id="swal-status" class="w-full border-2 p-3 rounded-lg bg-slate-50 focus:border-indigo-500 outline-none font-bold text-slate-700 cursor-pointer">
+                            <label class="block font-bold mb-1 text-slate-700">🏷️ 班表類型：</label>
+                            <select id="swal-edit-type" class="w-full border-2 p-2 rounded mb-3 bg-slate-50 focus:border-indigo-500 outline-none font-bold text-slate-700 cursor-pointer">
+                                <option value="點點綠" ${currentType === '點點綠' ? 'selected' : ''}>點點綠 (雙連/士林/石牌/北投)</option>
+                                <option value="花博" ${currentType === '花博' ? 'selected' : ''}>花博農民市集</option>
+                                <option value="希望廣場" ${currentType === '希望廣場' ? 'selected' : ''}>希望廣場</option>
+                                <option value="特殊邀請" ${currentType === '特殊邀請' ? 'selected' : ''}>特殊邀請 (快閃/特展)</option>
+                            </select>
+                            <label class="block font-bold mb-1 text-slate-700">📍 站點 / 攤位名稱：</label>
+                            <input id="swal-edit-station" class="w-full border-2 p-2 rounded mb-3 bg-slate-50 focus:border-indigo-500 outline-none font-bold text-slate-700" value="${shift.station || ''}" placeholder="點點綠外可不填">
+                            <label class="block font-bold mb-1 text-slate-700">✍️ 班表備註：</label>
+                            <input id="swal-note" class="w-full border-2 p-2 rounded mb-3 bg-slate-50 focus:border-indigo-500 outline-none text-slate-700" value="${shift.note || ''}" placeholder="例如：下午到...">
+                            <label class="block font-bold mb-1 text-slate-700">🚦 出勤狀態切換：</label>
+                            <select id="swal-status" class="w-full border-2 p-2 rounded bg-slate-50 focus:border-indigo-500 outline-none font-bold text-slate-700 cursor-pointer">
                                 <option value="normal" ${shift.status !== 'leave' ? 'selected' : ''}>🟢 正常出勤</option>
                                 <option value="leave" ${shift.status === 'leave' ? 'selected' : ''}>🔴 設定為請假</option>
                             </select>
@@ -512,19 +739,42 @@
                     denyButtonText: '<i class="fa-solid fa-trash"></i> 刪除此班',
                     cancelButtonText: '取消',
                     preConfirm: () => {
+                        const type = document.getElementById('swal-edit-type').value;
+                        let station = document.getElementById('swal-edit-station').value.trim();
+                        
+                        // 僅點點綠強制要求站名，其他若空值則以類型名稱補上
+                        if (type === '點點綠' && !station) {
+                            Swal.showValidationMessage('點點綠排班需填寫站點名稱');
+                            return false;
+                        }
+                        if (!station) station = type;
+
                         return {
+                            station: station,
+                            locationType: type,
                             note: document.getElementById('swal-note').value.trim(),
                             status: document.getElementById('swal-status').value
                         }
                     }
                 }).then(res => {
                     if (res.isConfirmed) {
+                        let drawerKey = ['雙連', '士林', '石牌', '北投'].find(k => res.value.station.includes(k)) || '';
                         db.ref(`schedules/${shift.id}`).update({
+                            station: res.value.station,
+                            drawer: drawerKey,
+                            subStation: res.value.station.replace(drawerKey, ''),
+                            locationType: res.value.locationType,
                             note: res.value.note,
                             status: res.value.status
                         });
                     } else if (res.isDenied) {
-                        db.ref(`schedules/${shift.id}`).remove();
+                        // 依據類型進行軟刪除或硬刪除
+                        if (currentType === '點點綠') {
+                            db.ref(`schedules/${shift.id}`).update({ isDeleted: true });
+                            Swal.fire({ title: '已移至回收桶', icon: 'info', toast: true, position: 'top-end', showConfirmButton: false, timer: 1500 });
+                        } else {
+                            db.ref(`schedules/${shift.id}`).remove();
+                        }
                     }
                 });
             };
@@ -535,14 +785,21 @@
                     title: `➕ 新增排班`,
                     html: `
                         <div class="text-left text-sm mt-4">
-                            <div class="bg-indigo-50 text-indigo-800 p-3 rounded-lg mb-4 font-bold border border-indigo-100 flex justify-between">
+                            <div class="bg-indigo-50 text-indigo-800 p-2 rounded mb-3 font-bold border border-indigo-100 flex justify-between text-xs">
                                 <span>📅 ${dateStr}</span>
                                 <span>👤 ${printTarget.value}</span>
                             </div>
-                            <label class="block font-bold mb-2 text-slate-700">📍 站點名稱：</label>
-                            <input id="swal-add-station" class="w-full border-2 p-3 rounded-lg mb-4 bg-slate-50 focus:border-indigo-500 outline-none font-bold" placeholder="輸入站點 (如: 雙連一)">
-                            <label class="block font-bold mb-2 text-slate-700">✍️ 備註 (選填)：</label>
-                            <input id="swal-add-note" class="w-full border-2 p-3 rounded-lg bg-slate-50 focus:border-indigo-500 outline-none" placeholder="輸入備註...">
+                            <label class="block font-bold mb-1 text-slate-700">🏷️ 班表類型：</label>
+                            <select id="swal-add-type" class="w-full border-2 p-2 rounded mb-3 bg-slate-50 focus:border-indigo-500 outline-none font-bold text-slate-700 cursor-pointer">
+                                <option value="點點綠">點點綠 (雙連/士林/石牌/北投)</option>
+                                <option value="花博">花博農民市集</option>
+                                <option value="希望廣場">希望廣場</option>
+                                <option value="特殊邀請">特殊邀請 (快閃/特展)</option>
+                            </select>
+                            <label class="block font-bold mb-1 text-slate-700">📍 站點 / 攤位名稱：</label>
+                            <input id="swal-add-station" class="w-full border-2 p-2 rounded mb-3 bg-slate-50 focus:border-indigo-500 outline-none font-bold" placeholder="點點綠外可不填">
+                            <label class="block font-bold mb-1 text-slate-700">✍️ 備註 (選填)：</label>
+                            <input id="swal-add-note" class="w-full border-2 p-2 rounded bg-slate-50 focus:border-indigo-500 outline-none" placeholder="輸入備註...">
                         </div>
                     `,
                     showCancelButton: true,
@@ -550,14 +807,26 @@
                     confirmButtonText: '確定新增',
                     cancelButtonText: '取消',
                     preConfirm: () => {
-                        const station = document.getElementById('swal-add-station').value.trim();
-                        if (!station) Swal.showValidationMessage('站點名稱不可空白');
-                        return { station, note: document.getElementById('swal-add-note').value.trim() }
+                        const type = document.getElementById('swal-add-type').value;
+                        let station = document.getElementById('swal-add-station').value.trim();
+                        
+                        // 僅點點綠強制要求站名
+                        if (type === '點點綠' && !station) {
+                            Swal.showValidationMessage('點點綠排班需填寫站點名稱');
+                            return false;
+                        }
+                        if (!station) station = type;
+
+                        return { 
+                            station, 
+                            locationType: type,
+                            note: document.getElementById('swal-add-note').value.trim() 
+                        }
                     }
                 }).then(res => {
                     if (res.isConfirmed) {
                         const id = Math.random().toString(36).slice(2);
-                        const station = res.value.station;
+                        const { station, locationType, note } = res.value;
                         let drawerKey = ['雙連', '士林', '石牌', '北投'].find(k => station.includes(k)) || '';
                         
                         db.ref(`schedules/${id}`).set({
@@ -567,8 +836,10 @@
                             station: station, 
                             subStation: station.replace(drawerKey, ''), 
                             staff: printTarget.value,
-                            note: res.value.note,
-                            status: 'normal'
+                            locationType: locationType,
+                            note: note,
+                            status: 'normal',
+                            isDeleted: false
                         });
                     }
                 });
@@ -600,10 +871,12 @@
 
             return {
                 csvInput, showInput, currentView, processCSV, navClass,
-                uniqueStaffList, analysisStats, getRowColor,
+                uniqueStaffList, analysisStats, getRowColor, p4Stats,
                 printTarget, printMonths, allMonths, contactInfo, 
                 selectedMonthData, printNow, isDBConnected,
-                showSidebar, openEditorA, openEditorB, openAddShift
+                showLeftSidebar, showRightSidebar, calendarLayout, getShiftColorClass,
+                openEditorA, openEditorB, openAddShift,
+                groupedSummary, deletedSchedules, restoreShift
             };
         }
     }).mount('#app');
