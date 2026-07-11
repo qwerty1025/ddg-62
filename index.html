@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>點點綠排班戰略系統 v9.6 (雲端連線優化版)</title>
+    <title>點點綠排班戰略系統 v10.0 (UX 視覺升級版)</title>
     
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -21,51 +20,37 @@
         .font-mono { font-family: 'JetBrains Mono', monospace; }
 
         /* 捲軸與容器 */
-        .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
-        .matrix-container { overflow: auto; height: 85vh; background: white; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); scroll-behavior: smooth; }
+        .custom-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 4px; }
         
-        /* 總表樣式 */
-        .matrix-table { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 0.75rem; }
-        .matrix-table th, .matrix-table td { border-right: 1px solid #e2e8f0; border-bottom: 1px solid #e2e8f0; padding: 4px 8px; white-space: nowrap; text-align: center; height: 32px; transition: background-color 0.3s;}
-        .matrix-table thead th { background-color: #f8fafc; position: sticky; top: 0; z-index: 20; font-weight: 700; color: #475569; }
-        .matrix-table td:first-child, .matrix-table th:first-child { position: sticky; left: 0; background-color: #fff; z-index: 30; font-weight: 700; text-align: left; border-right: 2px solid #64748b; color: #1e293b; }
-        .matrix-table th:first-child { z-index: 40; background-color: #f1f5f9; }
-        
-        /* 今日高光 */
-        .today-col-header { background-color: #fef08a !important; color: #854d0e !important; box-shadow: inset 0 -3px 0 #eab308; z-index: 25; }
-        .today-col-cell { background-color: #fef9c3 !important; border-left: 1px solid #fde047; border-right: 1px solid #fde047; }
-        
-        /* 視覺優化：區域分色 */
-        .station-group-bg-odd { background-color: #ffffff; }
-        .station-group-bg-even { background-color: #f8fafc; }
-        .shilin-bg { background-color: #f0fdf4 !important; }
-        .beitou-bg { background-color: #faf5ff !important; }
-        .station-divider { border-top: 3px solid #334155 !important; }
-
-        /* 四色戰隊 */
-        .hl-red { background-color: #fef2f2 !important; color: #b91c1c; border-left-color: #ef4444 !important; font-weight: bold; }
-        .hl-yellow { background-color: #fefce8 !important; color: #854d0e; border-left-color: #eab308 !important; font-weight: bold; }
-        .hl-green { background-color: #f0fdf4 !important; color: #15803d; border-left-color: #22c55e !important; font-weight: bold; }
-        .hl-blue { background-color: #eff6ff !important; color: #1e40af; border-left-color: #3b82f6 !important; font-weight: bold; }
-
-        /* 列印專用樣式 */
+        /* 列印專用樣式 - 放大與平衡 */
         @media print {
-            @page { size: A4 portrait; margin: 10mm; }
+            @page { size: A4 portrait; margin: 8mm; }
             body * { visibility: hidden; }
             #print-area, #print-area * { visibility: visible; }
             #print-area { position: absolute; left: 0; top: 0; width: 100%; height: 100%; background: white; overflow: visible; }
             .no-print { display: none !important; }
-            .print-grid-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+            .print-grid-layout { display: grid; grid-template-columns: 1fr; gap: 24px; } 
         }
         
-        .print-card { border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px; margin-bottom: 10px; page-break-inside: avoid; background: white; }
-        .print-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; text-align: center; font-size: 0.8rem; }
-        .print-day { border: 1px solid #e2e8f0; height: 60px; padding: 2px; display: flex; flex-direction: column; position: relative; }
-        .print-active { background-color: #f0fdf4; font-weight: bold; color: #166534; border-color: #86efac; }
+        .print-card { border: 1px solid #cbd5e1; border-radius: 8px; padding: 12px; margin-bottom: 12px; page-break-inside: avoid; background: white; }
+        .print-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; text-align: center; font-size: 0.9rem; }
+        
+        /* 提升日曆格子高度，容納更大的字體 */
+        .print-day { border: 1px solid #e2e8f0; min-height: 95px; padding: 4px; display: flex; flex-direction: column; position: relative; justify-content: flex-start; border-radius: 4px; transition: all 0.2s; }
+        .print-day:hover { border-color: #94a3b8; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .print-active { background-color: #f0fdf4; border-color: #86efac; }
 
-        /* 特殊節假日高光 */
-        .holiday-badge { font-size: 9px; color: #ef4444; background-color: #fee2e2; border-radius: 2px; padding: 0 2px; line-height: 1.2; scale: 0.9; }
+        /* 標記樣式全面升級 (字級放大、易讀性提升) */
+        .holiday-badge { font-size: 11px; color: #b91c1c; background-color: #fee2e2; border-radius: 4px; padding: 2px 4px; font-weight: 700; line-height: 1.2; border: 1px solid #fca5a5; display: inline-block; margin-bottom: 2px;}
+        .event-badge { font-size: 11px; color: #b45309; background-color: #fef3c7; border-radius: 4px; padding: 2px 4px; line-height: 1.2; font-weight: 700; border: 1px solid #fcd34d; display: inline-block; margin-bottom: 2px;}
+        
+        /* 希望廣場主題週次：支援多行顯示，不再截斷 */
+        .square-badge { font-size: 10px; border-radius: 4px; padding: 3px 5px; font-weight: 700; line-height: 1.35; text-align: left; width: 100%; margin-top: 2px; border-left-width: 3px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+        /* 班表區塊放大 */
+        .shift-block { font-size: 13px; font-weight: 900; padding: 4px; border-radius: 4px; width: 100%; margin-top: 4px; }
+        .shift-note { font-size: 10px; padding: 2px 4px; border-radius: 4px; font-weight: 500; margin-top: 2px; line-height: 1.2; }
 
         [v-cloak] { display: none; }
     </style>
@@ -74,279 +59,183 @@
 
 <div id="app" v-cloak class="h-screen flex flex-col relative">
 
-    <header class="h-14 bg-slate-900 text-white flex items-center justify-between px-4 shadow-md z-50 shrink-0 no-print">
+    <header class="h-16 bg-slate-900 text-white flex items-center justify-between px-6 shadow-md z-50 shrink-0 no-print">
+        <div class="flex items-center gap-6">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-orange-500 rounded-lg flex items-center justify-center font-bold text-white shadow-lg text-xl"><i class="fa-solid fa-cow"></i></div>
+                <h1 class="font-bold text-xl tracking-wide hidden md:block">排班戰略系統 <span v-if="isDBConnected" class="text-xs text-emerald-400 ml-2 font-normal"><i class="fa-cloud fa-solid"></i> 已連線</span></h1>
+            </div>
+            
+            <div class="bg-slate-800 p-1.5 rounded-lg flex gap-2 overflow-x-auto custom-scrollbar">
+                <button @click="currentView='myschedule'" :class="navClass('myschedule')" class="px-4 py-1.5 text-sm rounded-md transition font-bold whitespace-nowrap"><i class="fa-solid fa-print"></i> 日曆調度與列印</button>
+                <button @click="currentView='analysis'" :class="navClass('analysis')" class="px-4 py-1.5 text-sm rounded-md transition font-bold whitespace-nowrap"><i class="fa-solid fa-chart-pie"></i> 戰略分析</button>
+            </div>
+        </div>
+
         <div class="flex items-center gap-4">
-            <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-emerald-500 rounded flex items-center justify-center font-bold text-white shadow-lg">v9.6</div>
-                <h1 class="font-bold text-lg hidden md:block">排班戰略系統 <span v-if="isDBConnected" class="text-[10px] text-emerald-300 ml-1"><i class="fa-solid fa-cloud"></i> 已連線</span></h1>
-            </div>
-            
-            <div class="bg-slate-800 p-1 rounded flex gap-1 overflow-x-auto custom-scrollbar">
-                <button @click="currentView='matrix'" :class="navClass('matrix')" class="px-3 py-1 text-xs rounded transition whitespace-nowrap"><i class="fa-solid fa-table-cells"></i> 總表</button>
-                <button @click="currentView='analysis'" :class="navClass('analysis')" class="px-3 py-1 text-xs rounded transition whitespace-nowrap"><i class="fa-solid fa-chart-pie"></i> 戰略分析</button>
-                <button @click="currentView='myschedule'" :class="navClass('myschedule')" class="px-3 py-1 text-xs rounded transition bg-indigo-600 hover:bg-indigo-500 text-white font-bold whitespace-nowrap"><i class="fa-solid fa-print"></i> 班表列印</button>
-                <button @click="currentView='myreport'" :class="navClass('myreport')" class="px-3 py-1 text-xs rounded transition bg-orange-600 hover:bg-orange-500 text-white font-bold whitespace-nowrap"><i class="fa-solid fa-file-invoice-dollar"></i> 我的報表</button>
-            </div>
-            
-            <button v-if="currentView === 'matrix'" @click="scrollToToday" class="bg-yellow-500 hover:bg-yellow-400 text-yellow-900 font-bold px-3 py-1 text-xs rounded transition ml-2 shadow hidden sm:block">
-                <i class="fa-solid fa-bullseye"></i> 跳至今日
-            </button>
-        </div>
-
-        <div v-if="currentView === 'matrix'" class="hidden md:flex items-center gap-2 bg-slate-800 px-3 py-1 rounded border border-slate-700">
-            <span class="text-xs text-slate-400">PK:</span>
-            <select v-model="compareList[0]" class="bg-red-900/30 text-red-200 border-red-900 text-xs rounded w-20"><option value="">紅隊</option><option v-for="s in uniqueStaffList" :value="s">{{s}}</option></select>
-            <select v-model="compareList[1]" class="bg-yellow-900/30 text-yellow-200 border-yellow-900 text-xs rounded w-20"><option value="">黃隊</option><option v-for="s in uniqueStaffList" :value="s">{{s}}</option></select>
-            <select v-model="compareList[2]" class="bg-green-900/30 text-green-200 border-green-900 text-xs rounded w-20"><option value="">綠隊</option><option v-for="s in uniqueStaffList" :value="s">{{s}}</option></select>
-            <select v-model="compareList[3]" class="bg-blue-900/30 text-blue-200 border-blue-900 text-xs rounded w-20"><option value="">藍隊</option><option v-for="s in uniqueStaffList" :value="s">{{s}}</option></select>
-        </div>
-
-        <div class="flex items-center gap-2">
-            <button @click="showInput = !showInput" class="text-slate-400 hover:text-white" title="重置/匯入原始資料"><i class="fa-solid fa-pen-to-square"></i></button>
+            <button @click="showInput = !showInput" class="text-slate-400 hover:text-white transition" title="載入 CSV"><i class="fa-solid fa-file-import text-lg"></i></button>
         </div>
     </header>
 
     <div v-if="showInput" class="absolute inset-0 bg-slate-900/90 z-[60] flex items-center justify-center p-4 no-print">
-        <div class="bg-white w-full max-w-4xl rounded-lg h-[80vh] flex flex-col p-4">
-            <div class="flex justify-between mb-2">
-                <h3 class="font-bold">原始資料編輯 (將會覆寫雲端資料表)</h3>
+        <div class="bg-white w-full max-w-4xl rounded-xl shadow-2xl h-[80vh] flex flex-col p-6">
+            <div class="flex justify-between items-center mb-4 border-b pb-4">
+                <h3 class="font-bold text-xl text-slate-800"><i class="fa-solid fa-database text-emerald-600 mr-2"></i>資料庫強制覆寫 (CSV)</h3>
                 <div>
-                    <button @click="processCSV" class="bg-emerald-600 text-white px-4 py-1 rounded text-sm mr-2">覆寫並應用</button>
-                    <button @click="showInput = false" class="text-slate-500"><i class="fa-solid fa-times"></i></button>
+                    <button @click="processCSV" class="bg-emerald-600 hover:bg-emerald-700 transition text-white px-5 py-2 rounded-lg font-bold mr-3 shadow">執行覆寫</button>
+                    <button @click="showInput = false" class="text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-times"></i></button>
                 </div>
             </div>
-            <textarea v-model="csvInput" class="flex-grow p-2 font-mono text-xs border rounded"></textarea>
+            <textarea v-model="csvInput" class="flex-grow p-4 font-mono text-sm border-2 border-slate-200 rounded-lg focus:border-emerald-500 outline-none resize-none"></textarea>
         </div>
     </div>
 
     <main class="flex-grow p-4 overflow-hidden relative bg-slate-100 flex flex-col">
 
-        <!-- 總表檢視 -->
-        <div v-if="currentView === 'matrix'" class="matrix-container custom-scrollbar" id="matrixContainer">
-            <table class="matrix-table">
-                <thead>
-                    <tr>
-                        <th class="w-32 bg-slate-50">站名 \ 日期</th>
-                        <th v-for="header in matrixHeaders" :key="header.date" :id="'matrix-col-' + header.date" class="min-w-[40px]" :class="header.date === todayStr ? 'today-col-header' : ''">
-                            <div class="font-bold" :class="header.date === todayStr ? 'text-yellow-700' : 'text-slate-600'">{{ header.simpleDate }}</div>
-                            <div class="text-[9px] font-normal" :class="header.date === todayStr ? 'text-yellow-600' : 'text-slate-400'">{{ header.dayName }}</div>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <template v-for="(group, gIndex) in matrixGroups" :key="group.name">
-                        <tr v-for="(row, rIndex) in group.rows" :key="row.station" 
-                            :class="[gIndex % 2 === 0 ? 'station-group-bg-odd' : 'station-group-bg-even', rIndex === 0 && gIndex !== 0 ? 'station-divider' : '', row.isShilin ? 'shilin-bg' : '', row.isBeitou ? 'beitou-bg' : '']">
-                            <td>
-                                <div class="flex items-center justify-between">
-                                    <span>{{ row.station }}</span>
-                                    <span v-if="rIndex === 0" class="text-[9px] px-1 rounded text-white font-bold" :class="group.badgeClass">{{ group.name }}</span>
-                                </div>
-                            </td>
-                            <td v-for="(cell, i) in row.cells" :key="i" :class="[getComparisonColorClass(cell), matrixHeaders[i].date === todayStr ? 'today-col-cell' : '']" @click="cell ? editShiftCard(row.station, matrixHeaders[i].date, cell) : editEmptyCell(row.station, matrixHeaders[i].date)">
-                                <span v-if="cell">{{ cell }}</span>
-                                <span v-else class="opacity-0 hover:opacity-100 text-slate-300 text-[10px] cursor-pointer"><i class="fa-solid fa-plus"></i></span>
-                            </td>
-                        </tr>
-                    </template>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- 深度營運分析 (分流 P3 & P4) -->
-        <div v-if="currentView === 'analysis'" class="h-full bg-white rounded-lg shadow overflow-hidden flex flex-col">
-            <div class="p-4 border-b bg-slate-50 flex justify-between items-center">
-                <h3 class="font-bold text-slate-700"><i class="fa-solid fa-chart-line text-emerald-500 mr-2"></i>季度營運戰略分析面板</h3>
-                <div class="text-xs text-slate-500">*級距優惠：總場次 20+ (攤租85折) | 10+ (攤租9折) | 基準 $500/場</div>
+        <div v-if="currentView === 'analysis'" class="h-full bg-white rounded-xl shadow-sm overflow-hidden flex flex-col border border-slate-200">
+            <div class="p-5 border-b bg-slate-50 flex justify-between items-center">
+                <h3 class="font-bold text-lg text-slate-700"><i class="fa-solid fa-chart-line text-emerald-500 mr-2"></i>雙季度出攤攤租戰略面板</h3>
+                <div class="text-sm text-slate-500 font-medium bg-white px-3 py-1 rounded-full border shadow-sm">🌱 基準費用：$800/場 | 10~19場 ($720/場) | 20場以上 ($680/場)</div>
             </div>
-            <div class="overflow-auto p-4 custom-scrollbar flex-grow">
-                <table class="w-full text-xs text-left border-collapse">
-                    <thead class="bg-slate-100 sticky top-0 text-slate-500 uppercase z-10 shadow-sm">
+            <div class="overflow-auto p-4 custom-scroll flex-grow">
+                <table class="w-full text-sm text-left border-collapse">
+                    <thead class="bg-slate-100 sticky top-0 text-slate-600 z-10 shadow-sm font-bold tracking-wide">
                         <tr>
-                            <th class="px-3 py-3" rowspan="2">廠商名稱</th>
-                            <th class="px-3 py-2 text-center bg-purple-100/60 text-purple-900 font-bold border-l border-r" colspan="3">P3 季度衝刺 (5 ~ 7 月)</th>
-                            <th class="px-3 py-2 text-center bg-amber-100/60 text-amber-900 font-bold" colspan="3">P4 季度延續 (8 ~ 10 月)</th>
+                            <th class="px-4 py-3 border-b-2" rowspan="2">廠商名稱</th>
+                            <th class="px-4 py-2 text-center bg-purple-100/80 text-purple-900 border-l border-r border-b" colspan="3">P3 季度衝刺 (5 ~ 7 月)</th>
+                            <th class="px-4 py-2 text-center bg-amber-100/80 text-amber-900 border-b" colspan="3">P4 季度延續 (8 ~ 10 月)</th>
                         </tr>
-                        <tr class="bg-slate-50 border-b">
-                            <th class="px-2 py-2 text-center border-l text-purple-700 font-medium">總場次</th>
-                            <th class="px-2 py-2 text-center text-slate-500 font-normal">分佈 (雙/士/石/北)</th>
-                            <th class="px-2 py-2 text-right text-purple-900 font-bold border-r">預估攤租</th>
-                            <th class="px-2 py-2 text-center text-amber-700 font-medium">總場次</th>
-                            <th class="px-2 py-2 text-center text-slate-500 font-normal">分佈 (雙/士/石/北)</th>
-                            <th class="px-2 py-2 text-right text-amber-900 font-bold">預估攤租</th>
+                        <tr class="bg-slate-50">
+                            <th class="px-3 py-2 text-center border-l border-b text-purple-700">總場次</th>
+                            <th class="px-3 py-2 text-center border-b text-slate-500 font-normal">分佈 (雙/士/石/北)</th>
+                            <th class="px-3 py-2 text-right border-b text-purple-900 border-r">預估攤租</th>
+                            <th class="px-3 py-2 text-center border-b text-amber-700">總場次</th>
+                            <th class="px-3 py-2 text-center border-b text-slate-500 font-normal">分佈 (雙/士/石/北)</th>
+                            <th class="px-3 py-2 text-right border-b text-amber-900">預估攤租</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100">
-                        <tr v-for="stat in analysisStats" :key="stat.name" class="hover:bg-slate-50 transition">
-                            <td class="px-3 py-3 font-bold text-slate-700 border-r">{{ stat.name }}</td>
-                            
-                            <!-- P3 數據欄 -->
-                            <td class="px-2 py-3 text-center font-bold text-purple-600" :class="getRowColor(stat.p3Tier)">{{ stat.p3Count }}</td>
-                            <td class="px-2 py-3 text-center font-mono text-[10px] text-slate-500">{{ stat.p3Dist }}</td>
-                            <td class="px-2 py-3 text-right font-bold text-purple-900 border-r bg-purple-50/20">${{ stat.p3Rev.toLocaleString() }}</td>
-                            
-                            <!-- P4 數據欄 -->
-                            <td class="px-2 py-3 text-center font-bold text-amber-600" :class="getRowColor(stat.p4Tier)">{{ stat.p4Count }}</td>
-                            <td class="px-2 py-3 text-center font-mono text-[10px] text-slate-500">{{ stat.p4Dist }}</td>
-                            <td class="px-2 py-3 text-right font-bold text-amber-900 bg-amber-50/20">${{ stat.p4Rev.toLocaleString() }}</td>
-                        </tr>
-                        <tr v-if="analysisStats.length === 0">
-                            <td colspan="7" class="text-center py-8 text-slate-400">目前指定區間內查無排班統計數據。</td>
+                        <tr v-for="stat in analysisStats" :key="stat.name" :class="stat.name === '五寮尖山羊乳' ? 'bg-orange-50 font-bold' : 'hover:bg-slate-50 transition'">
+                            <td class="px-4 py-3 border-r flex items-center gap-2">
+                                <span v-if="stat.name === '五寮尖山羊乳'" class="text-orange-500"><i class="fa-solid fa-star"></i></span>
+                                {{ stat.name }}
+                            </td>
+                            <td class="px-3 py-3 text-center text-base" :class="getRowColor(stat.p3Tier)">{{ stat.p3Count }}</td>
+                            <td class="px-3 py-3 text-center font-mono text-xs text-slate-500">{{ stat.p3Dist }}</td>
+                            <td class="px-3 py-3 text-right font-bold text-purple-900 border-r bg-purple-50/30">${{ stat.p3Rev.toLocaleString() }}</td>
+                            <td class="px-3 py-3 text-center text-base" :class="getRowColor(stat.p4Tier)">{{ stat.p4Count }}</td>
+                            <td class="px-3 py-3 text-center font-mono text-xs text-slate-500">{{ stat.p4Dist }}</td>
+                            <td class="px-3 py-3 text-right font-bold text-amber-900 bg-amber-50/30">${{ stat.p4Rev.toLocaleString() }}</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        <!-- 班表列印頁面 -->
         <div v-if="currentView === 'myschedule'" class="h-full flex flex-col md:flex-row gap-4 relative">
             
-            <!-- 手機版浮動展開設定鈕 (僅在隱藏時出現) -->
-            <button v-if="!showSidebar" @click="showSidebar = true" class="md:hidden absolute top-0 left-0 bg-emerald-600 text-white font-bold px-3 py-1.5 rounded-br-lg text-xs z-30 shadow no-print">
-                <i class="fa-solid fa-gear spin"></i> 展開設定
+            <button v-if="!showSidebar" @click="showSidebar = true" class="md:hidden absolute top-4 left-4 bg-slate-800 text-white font-bold px-4 py-2 rounded-lg text-sm z-30 shadow-lg no-print">
+                <i class="fa-solid fa-sliders"></i> 打開控制面板
             </button>
 
-            <!-- 側邊列印設定欄 (加裝顯示/隱藏控制) -->
-            <div v-show="showSidebar" class="w-full md:w-80 bg-white p-4 rounded-lg shadow h-full overflow-auto no-print shrink-0 relative transition-all duration-300">
-                <div class="flex justify-between items-center mb-4 border-b pb-2">
-                    <h3 class="font-bold text-lg text-slate-800"><i class="fa-solid fa-print"></i> 班表列印設定</h3>
-                    <!-- 隱藏控制按鈕 -->
-                    <button @click="showSidebar = false" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-2 py-1 rounded text-xs transition">
-                        <i class="fa-solid fa-eye-slash"></i> 隱藏設定
-                    </button>
+            <div v-show="showSidebar" class="w-full md:w-[340px] bg-white p-5 rounded-xl shadow-sm h-full overflow-y-auto no-print shrink-0 border border-slate-200 custom-scroll flex flex-col">
+                <div class="flex justify-between items-center mb-6 border-b pb-4">
+                    <h3 class="font-bold text-xl text-slate-800"><i class="fa-solid fa-sliders text-indigo-500 mr-2"></i>調度與列印設定</h3>
+                    <button @click="showSidebar = false" class="bg-slate-100 hover:bg-slate-200 text-slate-600 w-8 h-8 rounded-full transition flex items-center justify-center"><i class="fa-solid fa-chevron-left"></i></button>
                 </div>
                 
-                <div class="mb-4">
-                    <label class="block text-xs font-bold mb-1">1. 選擇廠商 (主角)</label>
-                    <select v-model="printTarget" class="w-full border rounded p-2 text-sm bg-slate-50">
+                <div class="mb-6">
+                    <label class="block text-sm font-bold mb-2 text-slate-700">1. 目標廠商篩選</label>
+                    <select v-model="printTarget" class="w-full border-2 border-slate-200 rounded-lg p-3 text-base bg-slate-50 focus:border-indigo-500 focus:bg-white transition outline-none font-bold text-slate-800">
                         <option v-for="s in uniqueStaffList" :value="s">{{s}}</option>
                     </select>
                 </div>
 
-                <div class="mb-4">
-                    <label class="block text-xs font-bold mb-1">2. 選擇月份 (可多選)</label>
-                    <div class="grid grid-cols-3 gap-2">
-                        <label v-for="m in allMonths" :key="m" class="flex items-center text-xs p-1 border rounded cursor-pointer hover:bg-slate-50">
-                            <input type="checkbox" :value="m" v-model="printMonths" class="mr-1"> {{m}}
+                <div class="mb-6">
+                    <label class="block text-sm font-bold mb-2 text-slate-700">2. 顯示月份 (可複選)</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <label v-for="m in allMonths" :key="m" class="flex items-center p-2 border-2 rounded-lg cursor-pointer transition select-none" :class="printMonths.includes(m) ? 'border-indigo-500 bg-indigo-50 text-indigo-800 font-bold' : 'border-slate-100 hover:border-slate-300 bg-slate-50 text-slate-600'">
+                            <input type="checkbox" :value="m" v-model="printMonths" class="hidden"> 
+                            <i class="fa-solid fa-calendar-days mr-2 opacity-50"></i> {{m}}
                         </label>
                     </div>
                 </div>
 
-                <div class="mb-4">
-                    <label class="block text-xs font-bold mb-1">3. 聯絡資訊 (顯示於標題下)</label>
-                    <textarea v-model="contactInfo" class="w-full border rounded p-2 text-sm h-20" placeholder="例如：訂購專線 0912-345-678&#10;Line ID: @xyz123"></textarea>
-                </div>
-
                 <div class="mb-6">
-                    <label class="block text-xs font-bold mb-1">4. QR Code 連結 (最多2個)</label>
-                    <input v-model="qrUrl1" placeholder="URL 1 (如 FB 粉專)" class="w-full border rounded p-1 text-xs mb-2">
-                    <input v-model="qrUrl2" placeholder="URL 2 (如 Line 加好友)" class="w-full border rounded p-1 text-xs">
-                    <button @click="genQR" class="mt-2 w-full bg-slate-200 text-xs py-1 rounded hover:bg-slate-300">重新生成 QR</button>
+                    <label class="block text-sm font-bold mb-2 text-slate-700">3. 表頭聯絡資訊 (列印用)</label>
+                    <textarea v-model="contactInfo" class="w-full border-2 border-slate-200 rounded-lg p-3 text-sm h-24 bg-slate-50 focus:border-indigo-500 focus:bg-white transition outline-none resize-none"></textarea>
                 </div>
 
-                <button @click="printNow" class="w-full bg-indigo-600 text-white py-3 rounded-lg font-bold shadow hover:bg-indigo-700 transition mb-2">
-                    <i class="fa-solid fa-print"></i> 立即列印 (A4)
-                </button>
-                <div class="text-[10px] text-slate-500 text-center"><i class="fa-solid fa-circle-info"></i> 小撇步：手機用戶可點擊「隱藏設定」以獲得最大日曆閱讀視野。</div>
+                <div class="mt-auto pt-4 border-t">
+                    <button @click="printNow" class="w-full bg-slate-800 hover:bg-black text-white py-4 rounded-xl font-bold shadow-lg transition text-lg flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-print"></i> 輸出為 A4 格式
+                    </button>
+                </div>
             </div>
 
-            <!-- 右側輸出排版區 -->
-            <div id="print-area" class="flex-grow bg-white shadow-2xl p-4 md:p-8 overflow-y-auto custom-scrollbar">
-                <div class="flex justify-between items-start mb-6 border-b-2 border-slate-800 pb-4">
+            <div id="print-area" class="flex-grow bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-8 overflow-y-auto custom-scroll">
+                
+                <div class="flex justify-between items-end mb-8 border-b-4 border-slate-800 pb-4">
                     <div>
-                        <h1 class="text-2xl md:text-3xl font-bold text-slate-800 mb-2">{{ printTarget }} 出席班表</h1>
-                        <pre class="text-sm text-slate-600 font-sans whitespace-pre-wrap">{{ contactInfo }}</pre>
+                        <h1 class="text-3xl md:text-4xl font-black text-slate-900 tracking-tight mb-2">{{ printTarget }} 出席戰略班表</h1>
+                        <pre class="text-base text-slate-600 font-sans whitespace-pre-wrap font-medium">{{ contactInfo }}</pre>
                     </div>
-                    <div class="flex gap-4">
-                        <div v-if="qrUrl1" class="text-center shrink-0">
-                            <div id="qrcode1"></div>
-                            <span class="text-[10px] text-slate-400">掃描連結 1</span>
-                        </div>
-                        <div v-if="qrUrl2" class="text-center shrink-0">
-                            <div id="qrcode2"></div>
-                            <span class="text-[10px] text-slate-400">掃描連結 2</span>
-                        </div>
+                    <div class="text-right no-print">
+                        <span class="text-xs text-slate-400 bg-slate-100 px-3 py-1 rounded-full"><i class="fa-solid fa-mouse-pointer"></i> 點擊日曆區塊可編輯事件與班表</span>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 print-grid-layout">
-                    <div v-for="month in selectedMonthData" :key="month.label" class="print-card break-inside-avoid">
-                        <h3 @click="toggleMonth(month.label)" class="text-lg font-bold text-center bg-slate-100 py-1 mb-2 rounded border border-slate-200 cursor-pointer hover:bg-slate-200 transition select-none flex justify-center items-center gap-2">
-                            {{ month.label }}
-                            <i class="fa-solid text-sm" :class="collapsedMonths[month.label] ? 'fa-chevron-down' : 'fa-chevron-up'"></i>
-                        </h3>
-                        <div v-show="!collapsedMonths[month.label]">
-                            <div class="print-grid mb-1 border-b pb-1 font-bold text-slate-500">
-                                <div class="text-red-500">日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div class="text-red-500">六</div>
+                <div class="grid grid-cols-1 gap-10 print-grid-layout">
+                    <div v-for="month in selectedMonthData" :key="month.label" class="print-card break-inside-avoid shadow-sm">
+                        
+                        <h3 class="text-2xl font-black text-center bg-slate-800 text-white py-2 mb-4 rounded-lg tracking-widest">{{ month.label }}</h3>
+                        
+                        <div>
+                            <div class="print-grid mb-2 border-b-2 border-slate-200 pb-2 font-bold text-slate-600 text-base">
+                                <div>星期一</div><div>星期二</div><div>星期三</div><div>星期四</div><div>星期五</div><div class="text-red-600">星期六</div><div class="text-red-600">星期日</div>
                             </div>
+                            
                             <div class="print-grid">
-                                <div v-for="d in month.days" :key="d.dateStr" 
-                                     class="print-day" 
-                                     :class="{'print-active': d.shift, 'cursor-pointer hover:bg-slate-50': d.isCurrent}"
-                                     @click="handleDayClick(d)">
-                                    <div class="flex justify-between items-start w-full px-0.5">
-                                        <!-- 特殊節假日連假標記 -->
-                                        <span v-if="d.isHoliday && d.isCurrent" class="holiday-badge" :title="d.holidayName">連假</span>
-                                        <span v-else></span>
-                                        <div class="text-right text-[10px]" :class="d.isCurrent ? (d.isHoliday ? 'text-red-600 font-bold' : 'text-slate-600') : 'text-slate-200'">{{ d.dayNum }}</div>
+                                <div v-for="d in month.days" :key="d.dateStr" class="print-day" :class="{'print-active': d.shift && d.shift.status !== 'leave', 'bg-slate-50 border-dashed border-slate-200': !d.isCurrent}">
+                                    
+                                    <div class="flex justify-between items-start w-full cursor-pointer hover:bg-slate-200/50 transition rounded-t p-1" @click.stop="d.isCurrent && openEditorA(d.dateStr)" title="新增/編輯特殊事件">
+                                        <div class="flex flex-col items-start max-w-[75%]">
+                                            <span v-if="d.isHoliday && d.isCurrent" class="holiday-badge">{{ d.holidayName }}</span>
+                                            <span v-if="d.isFarmEvent && d.isCurrent && printTarget === '五寮尖山羊乳'" class="event-badge text-blue-800 bg-blue-100 border-blue-300">{{ d.farmEventName }}</span>
+                                            <span v-if="d.customEventName && d.isCurrent" class="event-badge bg-indigo-100 text-indigo-800 border-indigo-300"><i class="fa-solid fa-thumbtack mr-1"></i>{{ d.customEventName }}</span>
+                                        </div>
+                                        <div class="text-right text-sm font-bold pt-0.5 pr-1" :class="d.isCurrent ? (d.isHoliday || d.isWeekend ? 'text-red-600' : 'text-slate-700') : 'text-slate-300'">{{ d.dayNum }}</div>
                                     </div>
-                                    <div v-if="d.shift" class="text-xs text-center flex-grow flex flex-col justify-center items-center">
-                                        <div class="truncate w-full font-bold px-0.5">{{ d.shift.station }}</div>
-                                        <div v-if="d.shift.note" class="text-[9px] text-red-600 bg-red-100 px-1 mt-0.5 rounded truncate w-full font-normal leading-tight">{{ d.shift.note }}</div>
+                                    
+                                    <div v-if="d.isHopeSquare && d.isCurrent" class="square-badge pointer-events-none" :class="d.hopeSquareName.includes('新北市自籌') ? 'bg-purple-100 text-purple-900 border-purple-400' : 'bg-emerald-100 text-emerald-900 border-emerald-400'" :title="d.hopeSquareName">
+                                        <i class="fa-solid fa-leaf text-[9px]"></i> {{ d.hopeSquareName }}
                                     </div>
+
+                                    <div class="flex-grow flex flex-col justify-end p-1 mt-auto w-full">
+                                        <div v-if="d.shift" class="cursor-pointer hover:opacity-80 transition w-full" @click.stop="openEditorB(d.shift)" title="點擊編輯班表">
+                                            
+                                            <div class="shift-block text-center truncate" :class="d.shift.status === 'leave' ? 'bg-red-100 text-red-700 line-through border border-red-200' : 'bg-slate-800 text-white shadow'">
+                                                {{ d.shift.station }}
+                                            </div>
+                                            
+                                            <div v-if="d.shift.status === 'leave'" class="shift-note bg-red-600 text-white text-center font-bold">已請假</div>
+                                            <div v-if="d.shift.note && d.shift.status !== 'leave'" class="shift-note bg-amber-100 text-amber-800 border border-amber-200 text-center truncate">{{ d.shift.note }}</div>
+                                        </div>
+                                        
+                                        <div v-else-if="d.isCurrent" class="w-full h-8 mt-1 cursor-pointer bg-slate-100 hover:bg-slate-200 border border-slate-200 border-dashed rounded transition flex items-center justify-center text-xs text-slate-400 hover:text-slate-600 font-bold opacity-0 hover:opacity-100" @click.stop="openAddShift(d.dateStr)">
+                                            <i class="fa-solid fa-plus mr-1"></i>排班
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                
-                <div class="mt-8 text-center text-[10px] text-slate-300">Generated by 點點綠排班戰略系統 (Cloud Edition)</div>
-            </div>
-        </div>
-
-        <!-- 業績報表專區 -->
-        <div v-if="currentView === 'myreport'" class="h-full flex flex-col bg-white rounded-lg shadow overflow-hidden">
-            <div class="p-4 border-b bg-slate-50 flex justify-between items-center">
-                <div>
-                    <h3 class="font-bold text-slate-700"><i class="fa-solid fa-file-invoice-dollar text-orange-500 mr-2"></i>業績回報專區</h3>
-                    <div class="text-xs text-slate-500 mt-1">針對 <b>{{ printTarget }}</b> 的排班紀錄快速登錄</div>
-                </div>
-                <select v-model="printTarget" class="border rounded px-2 py-1 text-sm bg-white shadow-sm border-slate-300">
-                    <option v-for="s in uniqueStaffList" :value="s">{{s}}</option>
-                </select>
-            </div>
-            
-            <div class="flex-grow p-4 overflow-y-auto custom-scrollbar bg-slate-100">
-                <div v-if="myShifts.length === 0" class="text-center text-slate-400 py-10">目前沒有查詢到任何排班紀錄。</div>
-                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                    <div v-for="shift in myShifts" :key="shift.id" class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition">
-                        <div class="flex justify-between items-center mb-3 pb-2 border-b border-slate-100">
-                            <div class="font-bold text-slate-700 text-sm"><i class="fa-regular fa-calendar text-slate-400 mr-1"></i> {{ shift.date }}</div>
-                            <div class="text-xs font-bold px-2 py-1 rounded bg-slate-100 text-slate-600">{{ shift.station }}</div>
-                        </div>
-                        <div class="flex gap-3 mb-3">
-                            <div class="flex-1">
-                                <label class="block text-[10px] text-slate-400 font-bold mb-1">營業額 ($)</label>
-                                <input type="number" :id="'amt-'+shift.id" :value="salesData[shift.id]?.amount || ''" placeholder="輸入金額..." class="w-full border border-slate-300 rounded p-2 text-sm bg-slate-50 focus:bg-white focus:ring-2 focus:ring-orange-400 focus:outline-none transition">
-                            </div>
-                            <div class="flex-1">
-                                <label class="block text-[10px] text-slate-400 font-bold mb-1">天氣/備註</label>
-                                <input type="text" :id="'note-'+shift.id" :value="salesData[shift.id]?.note || ''" placeholder="例：下雨、完售..." class="w-full border border-slate-300 rounded p-2 text-sm bg-slate-50 focus:bg-white focus:ring-2 focus:ring-orange-400 focus:outline-none transition">
-                            </div>
-                        </div>
-                        <button @click="saveInlineReport(shift)" class="w-full bg-orange-50 hover:bg-orange-100 border border-orange-200 text-orange-700 font-bold py-2 rounded-lg text-sm transition shadow-sm">
-                            <i class="fa-solid fa-cloud-arrow-up mr-1"></i> 儲存雲端
-                        </button>
                     </div>
                 </div>
             </div>
         </div>
 
     </main>
-
-    <button v-if="currentView === 'myschedule'" @click="showRecentShiftsText" class="absolute bottom-6 right-6 w-14 h-14 bg-emerald-600 text-white rounded-full shadow-[0_10px_25px_rgba(0,0,0,0.3)] hover:bg-emerald-500 hover:scale-105 transition flex items-center justify-center text-2xl z-[100] no-print" title="產出近期出攤文案">
-        <i class="fa-solid fa-bullhorn"></i>
-    </button>
 </div>
 
 <script>
@@ -362,77 +251,68 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    const { createApp, ref, computed, onMounted, nextTick } = Vue;
-
-    const defaultCSV = `站名 / 日期,"05/01\n星期五","05/04\n星期一","05/05\n星期二","05/06\n星期三","05/07\n星期四","05/08\n星期五","05/11\n星期一","05/12\n星期二","05/13\n星期三","05/14\n星期四","05/15\n星期五","05/18\n星期一","05/19\n星期二","05/20\n星期三","05/21\n星期四","05/22\n星期五","05/25\n星期一","05/26\n星期二","05/27\n星期三","05/28\n星期四","05/29\n星期五","06/01\n星期一","06/02\n星期二","06/03\n星期三","06/04\n星期四","06/05\n星期五","06/08\n星期一","06/09\n星期二","06/10\n星期三","06/11\n星期四","06/12\n星期五","06/15\n星期一","06/16\n星期二","06/17\n星期三","06/18\n星期四","06/19\n星期五","06/22\n星期一","06/23\n星期二","06/24\n星期三","06/25\n星期四","06/26\n星期五","06/29\n星期一","06/30\n星期二","07/01\n星期三","07/02\n星期四","07/03\n星期五","07/06\n星期一","07/07\n星期二","07/08\n星期三","07/09\n星期四","07/10\n星期五","07/13\n星期一","07/14\n星期二","07/15\n星期三","07/16\n星期四","07/17\n星期五","07/20\n星期一","07/21\n星期二","07/22\n星期三","07/23\n星期四","07/24\n星期五","07/27\n星期一","07/28\n星期二","07/29\n星期三","07/30\n星期四","07/31\n星期五"
-雙連一,樂穠,御品園,文獻農場,臺北有農(臺北市農村),雅芯香草園,樂穠,御品園,DIVA の 吃貨棧,輝要有機菜園,臺北有農(臺北市農村),樂穠,雅芯香草園,文獻農場,雅芯香草園,吉米農場,樂穠,清淨母語,永昇甘蔗,輝要有機菜園,臺北有農(臺北市農村),川桑果園,御品園,文獻農場,輝要有機菜園,臺北有農(臺北市農村),川桑果園,御品園,永昇甘蔗,松滿緣有機農場,吉米農場,樂穠,御品園,文獻農場,五寮尖山羊乳,臺北有農(臺北市農村),川桑果園,御品園,永昇甘蔗,輝要有機菜園,雅芯香草園,川桑果園,清淨母語,永昇甘蔗,輝要有機菜園,吉米農場,川桑果園,御品園,文獻農場,輝要有機菜園,雅芯香草園,川桑果園,御品園,永昇甘蔗,輝要有機菜園,臺北有農(臺北市農村),川桑果園,御品園,順伯紅心土芭樂園,御品園,臺北有農(臺北市農村),川桑果園,清淨母語,永昇甘蔗,輝要有機菜園,臺北有農(臺北市農村),川桑果園
-雙連二,松滿緣有機農場,瑞田有機農場,永昇甘蔗,輝要有機菜園,樂穠,饅實在小舖,瑞田有機農場,永昇甘蔗,御品園,樂穠,饅實在小舖,御品園,永昇甘蔗,輝要有機菜園,臺北有農(臺北市農村),饅實在小舖,御品園,輝鴻有機農場,御品園,樂穠,松滿緣有機農場,瑞田有機農場,永昇甘蔗,御品園,樂穠,樂穠,瑞田有機農場,雅芯香草園,輝要有機菜園,雅芯香草園,川桑果園,瑞田有機農場,永昇甘蔗,輝要有機菜園,樂穠,樂穠,瑞田有機農場,雅芯香草園,御品園,臺北有農(臺北市農村),松滿緣有機農場,御品園,輝鴻有機農場,御品園,臺北有農(臺北市農村),樂穠,瑞田有機農場,永昇甘蔗,御品園,臺北有農(臺北市農村),樂穠,瑞田有機農場,輝鴻有機農場,御品園,樂穠,樂穠,瑞田有機農場,永昇甘蔗,德玉茶園,樂穠,樂穠,御品園,輝鴻有機農場,御品園,樂穠,松滿緣有機農場
-雙連三,,,雅芯香草園,御品園,瑞田有機農場,川桑果園,,輝鴻有機農場,,瑞田有機農場,五寮尖山羊乳,瑞田有機農場,輝鴻有機農場,御品園,樂穠,,瑞田有機農場,DIVA の 吃貨棧,饅實在小舖,瑞田有機農場,樂穠,,輝鴻有機農場,饅實在小舖,瑞田有機農場,饅實在小舖,,輝鴻有機農場,御品園,樂穠,臺北有農(臺北市農村),瑞田有機農場,輝鴻有機農場,御品園,瑞田有機農場,饅實在小舖,,輝鴻有機農場,饅實在小舖,樂穠,樂穠,瑞田有機農場,DIVA の 吃貨棧,,樂穠,,,輝鴻有機農場,德玉茶園,樂穠,五寮尖山羊乳,,DIVA の 吃貨棧,德玉茶園,瑞田有機農場,饅實在小舖,,輝鴻有機農場,,瑞田有機農場,,瑞田有機農場,DIVA の 吃貨棧,301farm農場,瑞田有機農場,樂穠
-雙連四,,,輝鴻有機農場,,,,,,,,,,,饅實在小舖,瑞田有機農場,,,,,雅芯香草園,饅實在小舖,,,,日心農場,御品園,,,饅實在小舖,瑞田有機農場,饅實在小舖,,DIVA の 吃貨棧,,日心農場,,,,,瑞田有機農場,饅實在小舖,,,,瑞田有機農場,,,,,瑞田有機農場,,,,,,,,DIVA の 吃貨棧,,,,,,,,饅實在小舖
-雙連五,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
-士林1,川桑果園,臺北有農(臺北市農村),人山艸,文獻農場,麥莉貝果,川桑果園,清淨母語,人山艸,日心農場,力凡「米」烘焙,川桑果園,臺北有農(臺北市農村),日心農場,,人山艸,川桑果園,松滿緣有機農場,人山艸,日心農場,力凡「米」烘焙,Wholesome 好•好酸麵包,清淨母語,人山艸,文獻農場,力凡「米」烘焙,川桑果園,臺北有農(臺北市農村),人山艸,日心農場,部落e購,川桑果園,力凡「米」烘焙,人山艸,文獻農場,部落e購,川桑果園,松滿緣有機農場,人山艸,日心農場,瑞田有機農場,Wholesome 好•好酸麵包,松滿緣有機農場,人山艸,清淨母語,臺北有農(臺北市農村),部落e購,清淨母語,人山艸,文獻農場,力凡「米」烘焙,御品園,臺北有農(臺北市農村),人山艸,力凡「米」烘焙,吉米農場,部落e購,臺北有農(臺北市農村),人山艸,部落e購,雅芯香草園,呷米,臺北有農(臺北市農村),人山艸,清淨母語,部落e購,Wholesome 好•好酸麵包
-士林2,御品園,瑞田有機農場,清淨母語,部落e購,部落e購,日心農場,臺北有農(臺北市農村),呷米,部落e購,人山艸,呷米,瑞田有機農場,清淨母語,文獻農場,部落e購,安工坊烘焙,臺北有農(臺北市農村),呷米,清淨母語,麥莉貝果,川桑果園,臺北有農(臺北市農村),雅芯香草園,部落e購,吉米農場,日心農場,瑞田有機農場,呷米,清淨母語,五寮尖山羊乳,呷米,臺北有農(臺北市農村),,部落e購,清淨母語,日心農場,臺北有農(臺北市農村),,清淨母語,麥莉貝果,川桑果園,臺北有農(臺北市農村),瑞田有機農場,臺北有農(臺北市農村),瑞田有機農場,御品園,臺北有農(臺北市農村),呷米,部落e購,部落e購,,瑞田有機農場,雅芯香草園,臺北有農(臺北市農村),松滿緣有機農場,御品園,瑞田有機農場,呷米,臺北有農(臺北市農村),順伯紅心土芭樂園,御品園,瑞田有機農場,松滿緣有機農場,部落e購,挑實｜酸種麵包,御品園
-士林3,,清淨母語,,饅實在小舖,人山艸,清淨母語,瑞田有機農場,松滿緣有機農場,臺北有農(臺北市農村),臺北有農(臺北市農村),御品園,饅實在小舖,,部落e購,臺北有農(臺北市農村),呷米,瑞田有機農場,清淨母語,部落e購,DIVA の 吃貨棧,呷米,瑞田有機農場,,臺北有農(臺北市農村),雅芯香草園,松滿緣有機農場,牧蜂農莊,,部落e購,挑實｜酸種麵包,御品園,瑞田有機農場,,麥莉貝果,臺北有農(臺北市農村),御品園,瑞田有機農場,,部落e購,部落e購,御品園,瑞田有機農場,,饅實在小舖,人山艸,松滿緣有機農場,瑞田有機農場,川桑果園,臺北有農(臺北市農村),,,清淨母語,,,饅實在小舖,麥莉貝果,饅實在小舖,雅芯香草園,饅實在小舖,,,清淨母語,順伯紅心土芭樂園,臺北有農(臺北市農村),順伯紅心土芭樂園,
-士林4,,,,,,御品園,呷米,清淨母語,饅實在小舖,部落e購,安工坊烘焙,牧蜂農莊,,臺北有農(臺北市農村),,,清淨母語,,臺北有農(臺北市農村),部落e購,御品園,牧蜂農莊,,德玉茶園,部落e購,五寮尖山羊乳,清淨母語,,臺北有農(臺北市農村),,,饅實在小舖,,臺北有農(臺北市農村),,,清淨母語,,臺北有農(臺北市農村),臺北有農(臺北市農村),,饅實在小舖,,,,,,,,,,,,,,,,,,,,,,,,
-石牌1,川桑果園,饅實在小舖,呷米,臺北有農(臺北市農村),DIVA の 吃貨棧,五寮尖山羊乳,清淨母語,雅芯香草園,Wholesome 好•好酸麵包,雅芯香草園,川桑果園,力凡「米」烘焙,呷米,301farm農場,DIVA の 吃貨棧,川桑果園,牧蜂農莊,雅芯香草園,臺北有農(臺北市農村),瑞田有機農場,川桑果園,清淨母語,呷米,Wholesome 好•好酸麵包,DIVA の 吃貨棧,川桑果園,清淨母語,瑞田有機農場,Wholesome 好•好酸麵包,DIVA の 吃貨棧,部落e購,清淨母語,呷米,Wholesome 好•好酸麵包,瑞田有機農場,川桑果園,清淨母語,臺北有農(臺北市農村),古乙伯苦茶油,松滿緣有機農場,川桑果園,力凡「米」烘焙,松滿緣有機農場,Wholesome 好•好酸麵包,雅芯香草園,川桑果園,饅實在小舖,瑞田有機農場,古乙伯苦茶油,DIVA の 吃貨棧,301farm農場,力凡「米」烘焙,瑞田有機農場,Wholesome 好•好酸麵包,臺北有農(臺北市農村),輝要有機菜園,清淨母語,川桑果園,順伯紅心土芭樂園,DIVA の 吃貨棧,川桑果園,松滿緣有機農場,川桑果園,力凡「米」烘焙,瑞田有機農場,川桑果園
-石牌2,301farm農場,臺北有農(臺北市農村),臺北有農(臺北市農村),Wholesome 好•好酸麵包,臺北有農(臺北市農村),安工坊烘焙,輝要有機菜園,臺北有農(臺北市農村),古乙伯苦茶油,DIVA の 吃貨棧,麥莉貝果,清淨母語,臺北有農(臺北市農村),臺北有農(臺北市農村),瑞田有機農場,部落e購,臺北有農(臺北市農村),臺北有農(臺北市農村),古乙伯苦茶油,松滿緣有機農場,安工坊烘焙,臺北有農(臺北市農村),臺北有農(臺北市農村),古乙伯苦茶油,瑞田有機農場,安工坊烘焙,臺北有農(臺北市農村),松滿緣有機農場,力凡「米」烘焙,人山艸,川桑果園,臺北有農(臺北市農村),瑞田有機農場,古乙伯苦茶油,DIVA の 吃貨棧,安工坊烘焙,輝要有機菜園,瑞田有機農場,臺北有農(臺北市農村),DIVA の 吃貨棧,安工坊烘焙,清淨母語,呷米,古乙伯苦茶油,部落e購,安工坊烘焙,清淨母語,臺北有農(臺北市農村),清淨母語,人山艸,川桑果園,牧蜂農莊,川桑果園,松滿緣有機農場,人山艸,川桑果園,臺北有農(臺北市農村),臺北有農(臺北市農村),古乙伯苦茶油,臺北有農(臺北市農村),安工坊烘焙,臺北有農(臺北市農村),臺北有農(臺北市農村),古乙伯苦茶油,人山艸,安工坊烘焙
-石牌3,呷米,輝要有機菜園,瑞田有機農場,力凡「米」烘焙,日心農場,部落e購,饅實在小舖,瑞田有機農場,松滿緣有機農場,瑞田有機農場,清淨母語,臺北有農(臺北市農村),瑞田有機農場,Wholesome 好•好酸麵包,日心農場,五寮尖山羊乳,輝要有機菜園,瑞田有機農場,清淨母語,日心農場,部落e購,輝要有機菜園,瑞田有機農場,清淨母語,文獻農場,呷米,輝要有機菜園,臺北有農(臺北市農村),古乙伯苦茶油,瑞田有機農場,安工坊烘焙,輝要有機菜園,雅芯香草園,臺北有農(臺北市農村),雅芯香草園,呷米,饅實在小舖,呷米,五寮尖山羊乳,挑實｜酸種麵包,清淨母語,臺北有農(臺北市農村),臺北有農(臺北市農村),臺北有農(臺北市農村),日心農場,呷米,臺北有農(臺北市農村),清淨母語,臺北有農(臺北市農村),臺北有農(臺北市農村),安工坊烘焙,臺北有農(臺北市農村),呷米,清淨母語,挑實｜酸種麵包,安工坊烘焙,輝要有機菜園,瑞田有機農場,清淨母語,挑實｜酸種麵包,人山艸,輝要有機菜園,瑞田有機農場,臺北有農(臺北市農村),臺北有農(臺北市農村),呷米
-石牌4,清淨母語,,,古乙伯苦茶油,瑞田有機農場,松滿緣有機農場,牧蜂農莊,日心農場,臺北有農(臺北市農村),挑實｜酸種麵包,部落e購,輝要有機菜園,人山艸,古乙伯苦茶油,挑實｜酸種麵包,清淨母語,饅實在小舖,清淨母語,,吉米農場,五寮尖山羊乳,饅實在小舖,301farm農場,臺北有農(臺北市農村),麥莉貝果,部落e購,饅實在小舖,,臺北有農(臺北市農村),臺北有農(臺北市農村),清淨母語,牧蜂農莊,臺北有農(臺北市農村),德玉茶園,挑實｜酸種麵包,部落e購,牧蜂農莊,,德玉茶園,日心農場,部落e購,輝要有機菜園,雅芯香草園,德玉茶園,挑實｜酸種麵包,五寮尖山羊乳,牧蜂農莊,,,吉米農場,呷米,輝要有機菜園,臺北有農(臺北市農村),臺北有農(臺北市農村),部落e購,呷米,牧蜂農莊,,臺北有農(臺北市農村),部落e購,五寮尖山羊乳,,呷米,順伯紅心土芭樂園,DIVA の 吃貨棧,五寮尖山羊乳
-北投1,      7月正式開放,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,日心農場,雅芯香草園,川桑果園,饅實在小舖,雅芯香草園,力凡「米」烘焙,瑞田有機農場,川桑果園,饅實在小舖,,部落e購,雅芯香草園,川桑果園,力凡「米」烘焙,,,吉米農場,川桑果園,饅實在小舖,雅芯香草園,饅實在小舖,雅芯香草園,川桑果園
-北投2,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,部落e購,清淨母語,日心農場,輝要有機菜園,,饅實在小舖,挑實｜酸種麵包,部落e購,清淨母語,,,DIVA の 吃寮尖山羊乳,五寮尖山羊乳,松滿緣有機農場,,,瑞田有機農場,部落e購,,呷米,,清淨母語,部落e購
-北投3,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,雅芯香草園,,饅實在小舖,,,,,饅實在小舖,,,,瑞田有機農場,,,,,,饅實在小舖,,,,,
-北投4,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,`;
+    const { createApp, ref, computed, onMounted } = Vue;
 
     createApp({
         setup() {
-            const csvInput = ref(defaultCSV);
+            const csvInput = ref('');
             const showInput = ref(false);
-            const currentView = ref('matrix'); 
-            const compareList = ref(['', '', '', '']); 
+            const currentView = ref('myschedule'); 
             
             const schedules = ref([]);
-            const salesData = ref({});
+            const customEvents = ref({}); 
             const isDBConnected = ref(false);
-            
-            // 班表列印設定欄之顯示狀態管理（預設展開）
             const showSidebar = ref(true);
 
-            // 2026 行政院公告之國定連假對照表陣列
+            // 五寮尖山羊乳專屬教育事件 
+            const farmEvents = {
+                '2026-05-06': '食農體驗營',
+                '2026-07-20': '向日葵花海調度'
+            };
+
+            // 115年(2026) 連續假期對照表 (國定假日確實標記)
             const holidays2026 = {
-                // 元旦
-                '2026-01-01': '元旦',
-                // 春節連假 (除夕 2/16 ~ 初五 2/21，加上調休調整)
-                '2026-02-13': '春節連假', '2026-02-14': '春節連假', '2026-02-15': '春節連假',
-                '2026-02-16': '除夕', '2026-02-17': '初一', '2026-02-18': '初二',
-                '2026-02-19': '初三', '2026-02-20': '初四', '2026-02-21': '初五', '2026-02-22': '春節連假',
-                // 兒童節與清明連假
-                '2026-04-02': '清明連假', '2026-04-03': '兒童節', '2026-04-04': '清明節', '2026-04-05': '清明連假',
-                // 端午連假
-                '2026-06-18': '端午連假', '2026-06-19': '端午連假', '2026-06-20': '端午節', '2026-06-21': '端午連假',
-                // 中秋連假
-                '2026-09-24': '中秋連假', '2026-09-25': '中秋節', '2026-09-26': '中秋連假', '2026-09-27': '中秋連假',
-                // 國慶連假
+                '2026-01-01': '元旦', '2026-01-02': '元旦連假', '2026-01-03': '元旦連假', '2026-01-04': '元旦連假',
+                '2026-02-14': '春節連假', '2026-02-15': '春節連假', '2026-02-16': '除夕', '2026-02-17': '初一',
+                '2026-02-18': '初二', '2026-02-19': '初三', '2026-02-20': '初四', '2026-02-21': '初五', '2026-02-22': '春節連假',
+                '2026-02-28': '和平紀念日', '2026-03-01': '228連假', '2026-03-02': '228連假',
+                '2026-04-03': '兒童節', '2026-04-04': '清明節', '2026-04-05': '清明連假', '2026-04-06': '清明連假',
+                '2026-06-19': '端午連假', '2026-06-20': '端午節', '2026-06-21': '端午連假', 
+                '2026-09-25': '中秋連假', '2026-09-26': '中秋連假', '2026-09-27': '中秋節', 
                 '2026-10-09': '國慶連假', '2026-10-10': '國慶日', '2026-10-11': '國慶連假'
             };
 
-            const getLocalToday = () => {
-                const d = new Date();
-                const y = d.getFullYear();
-                const m = String(d.getMonth() + 1).padStart(2, '0');
-                const day = String(d.getDate()).padStart(2, '0');
-                return `${y}-${m}-${day}`;
+            // 115年(2026) 希望廣場主題週次表
+            const hopeSquare2026 = {
+                '2026-08-01': '臺中週', '2026-08-02': '臺中週',
+                '2026-08-08': '南投週(雲林自籌)', '2026-08-09': '南投週(雲林自籌)',
+                '2026-08-15': '全國青農派對(畜牧司、高雄自籌)', '2026-08-16': '全國青農派對(畜牧司、高雄自籌)',
+                '2026-08-22': '屏東週(宜蘭協辦、南投、農糧署自籌)', '2026-08-23': '屏東週(宜蘭協辦、南投、農糧署自籌)',
+                '2026-08-29': '池上週', '2026-08-30': '池上週',
+                '2026-09-05': '臺東週(漁業署、農糧署、新北市自籌)', '2026-09-06': '臺東週(漁業署、農糧署、新北市自籌)',
+                '2026-09-11': '雲林週(宜蘭、畜牧司自籌)', '2026-09-12': '雲林週(宜蘭、畜牧司自籌)', '2026-09-13': '雲林週(宜蘭、畜牧司自籌)',
+                '2026-09-18': '花蓮週(南投、新北市自籌)', '2026-09-19': '花蓮週(南投、新北市自籌)', '2026-09-20': '花蓮週(南投、新北市自籌)',
+                '2026-09-25': '宜蘭週(農糧署自籌)', '2026-09-26': '宜蘭週(農糧署自籌)', '2026-09-27': '宜蘭週(農糧署自籌)',
+                '2026-10-03': '屏東週(新北市自籌)', '2026-10-04': '屏東週(新北市自籌)',
+                '2026-10-10': '嘉義週(新北市自籌)', '2026-10-11': '嘉義週(新北市自籌)',
+                '2026-10-17': '桃園週(農業部、農糧署、漁業署、畜牧司、新北市、高雄自籌)', '2026-10-18': '桃園週(農業部、農糧署、漁業署、畜牧司、新北市、高雄自籌)',
+                '2026-10-24': '臺南週(農業部、農糧署、南投自籌)', '2026-10-25': '臺南週(農業部、農糧署、南投自籌)',
+                '2026-10-31': '新竹週(農業部、漁業署自籌)', '2026-11-01': '新竹週(農業部、漁業署自籌)',
+                '2026-11-07': '高雄週(漁業署、雲林自籌)', '2026-11-08': '高雄週(漁業署、雲林自籌)',
+                '2026-11-14': '彰化週(臺南、南投自籌)', '2026-11-15': '彰化週(臺南、南投自籌)',
+                '2026-11-21': '嘉義週(畜牧司自籌)', '2026-11-22': '嘉義週(畜牧司自籌)',
+                '2026-11-28': '彰化週(農糧署自籌)', '2026-11-29': '彰化週(農糧署自籌)',
+                '2026-12-19': '南投週(畜牧司自籌)', '2026-12-20': '南投週(畜牧司自籌)',
+                '2026-12-26': '宜蘭週(農糧署自籌)', '2026-12-27': '宜蘭週(農糧署自籌)'
             };
-            const todayStr = ref(getLocalToday());
 
             const printTarget = ref('五寮尖山羊乳'); 
-            const printMonths = ref(['2026-07', '2026-08', '2026-09', '2026-10']); 
-            const contactInfo = ref('訂購專線: 0912-345-678\nLine ID: @example');
-            const qrUrl1 = ref('https://www.facebook.com');
-            const qrUrl2 = ref('');
+            const printMonths = ref(['2026-08', '2026-09', '2026-10', '2026-11', '2026-12']); 
+            const contactInfo = ref('【點點綠農業調度專線】\n陳宗賢管理模式執行單位\n0912-345-678');
 
-            const navClass = (view) => currentView.value === view ? 'bg-emerald-600 text-white shadow font-bold' : 'text-slate-400 hover:text-white';
-            const truncateName = (name) => name.length > 3 ? name.substring(0, 3) + '..' : name;
-
+            const navClass = (view) => currentView.value === view ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-300 hover:text-white hover:bg-slate-700/50';
+            
+            // CSV 解析邏輯
             const processCSV = () => {
                 const results = [];
                 const parsed = Papa.parse(csvInput.value, { header: false, skipEmptyLines: true });
@@ -471,7 +351,7 @@
                             staffs.forEach(s => {
                                 results.push({
                                     id: Math.random().toString(36).slice(2),
-                                    date, drawer: drawerKey, station: stationRaw, subStation: stationRaw.replace(drawerKey, ''), staff: s
+                                    date, drawer: drawerKey, station: stationRaw, subStation: stationRaw.replace(drawerKey, ''), staff: s, status: 'normal'
                                 });
                             });
                         }
@@ -482,7 +362,7 @@
                 results.forEach(s => updates[s.id] = s);
                 db.ref('schedules').set(updates);
                 showInput.value = false;
-                nextTick(genQR);
+                Swal.fire('覆寫成功', '資料已同步至雲端', 'success');
             };
 
             const uniqueStaffList = computed(() => {
@@ -500,99 +380,11 @@
                 return [...new Set([...dataMonths, ...fullYearMonths])].sort();
             });
 
-            const scrollToToday = () => {
-                setTimeout(() => {
-                    const el = document.getElementById('matrix-col-' + todayStr.value);
-                    if (el) {
-                        const container = document.getElementById('matrixContainer');
-                        const scrollPos = el.offsetLeft - container.offsetWidth / 2 + el.offsetWidth / 2;
-                        container.scrollTo({ left: scrollPos, behavior: 'smooth' });
-                    } else {
-                        Swal.fire({ toast: true, position: 'top-end', icon: 'info', title: '目前沒有您的今日排班資訊', timer: 2000, showConfirmButton: false });
-                    }
-                }, 100);
-            };
-
-            // ====== 總表相關邏輯 ======
-            const matrixHeaders = computed(() => { 
-                const dates = [...new Set(schedules.value.map(s => s.date))].sort();
-                return dates.map(d => {
-                    const dateObj = new Date(d);
-                    const day = ['日','一','二','三','四','五','六'][dateObj.getDay()];
-                    return { simpleDate: `${dateObj.getMonth()+1}/${dateObj.getDate()}`, dayName: `(${day})`, date: d };
-                });
-            });
-
-            const matrixGroups = computed(() => { 
-                const groups = [];
-                const allStations = [...new Set(schedules.value.map(s => s.station))].sort();
-                ['雙連', '士林', '石牌', '北投'].forEach(key => {
-                    const myStations = allStations.filter(s => s.includes(key));
-                    const rows = myStations.map(st => {
-                        const cells = matrixHeaders.value.map(h => {
-                            const match = schedules.value.find(s => s.date === h.date && s.station === st);
-                            return match ? match.staff : '';
-                        });
-                        return { station: st, cells, isShilin: key === '士林', isBeitou: key === '北投' };
-                    });
-                    if (rows.length > 0) {
-                        let badgeClass = 'bg-slate-500';
-                        if (key === '雙連') badgeClass = 'bg-blue-500';
-                        if (key === '士林') badgeClass = 'bg-emerald-500';
-                        if (key === '石牌') badgeClass = 'bg-amber-500';
-                        if (key === '北投') badgeClass = 'bg-purple-500';
-                        groups.push({ name: key, rows, badgeClass });
-                    }
-                });
-                return groups;
-            });
-
-            const editEmptyCell = (station, date) => {
-                Swal.fire({
-                    title: `新增排班`,
-                    text: `${station} - ${date}`,
-                    input: 'text',
-                    inputLabel: '廠商名稱',
-                    inputPlaceholder: '請輸入廠商名稱...',
-                    showCancelButton: true,
-                    confirmButtonText: '新增',
-                    cancelButtonText: '取消'
-                }).then(res => {
-                    if (res.isConfirmed && res.value) {
-                        const drawerKey = ['雙連', '士林', '石牌', '北投'].find(k => station.includes(k)) || '';
-                        const id = Math.random().toString(36).slice(2);
-                        db.ref(`schedules/${id}`).set({
-                            id, date, drawer: drawerKey, station, subStation: station.replace(drawerKey, ''), staff: res.value.trim()
-                        });
-                        Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: '已新增', timer: 1500, showConfirmButton: false });
-                    }
-                });
-            };
-
-            const editShiftCard = (station, date, currentStaff) => {
-                const match = schedules.value.find(s => s.date === date && s.station === station);
-                if (!match) return;
-                Swal.fire({
-                    title: `編輯排班`,
-                    html: `廠商: <b>${match.staff}</b><br>站點: ${match.station}<br>日期: ${match.date}`,
-                    showDenyButton: true,
-                    showCancelButton: true,
-                    confirmButtonText: '關閉',
-                    denyButtonText: '刪除此排班',
-                    denyButtonColor: '#ef4444'
-                }).then(res => {
-                    if (res.isDenied) {
-                        db.ref(`schedules/${match.id}`).remove();
-                        Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: '已刪除', timer: 1500, showConfirmButton: false });
-                    }
-                });
-            };
-
-            // ====== 雙季度戰略分析邏輯 (P3:5~7月 / P4:8~10月) ======
+            // ====== 戰略分析 ======
             const analysisStats = computed(() => {
                 const stats = {};
-                
                 schedules.value.forEach(s => {
+                    if (s.status === 'leave') return; 
                     if (!stats[s.staff]) {
                         stats[s.staff] = { 
                             name: s.staff, 
@@ -600,33 +392,27 @@
                             p4Count: 0, p4Dist: { '雙連': 0, '士林': 0, '石牌': 0, '北投': 0 }
                         };
                     }
-                    
                     const month = parseInt(s.date.substring(5, 7));
-                    
                     if (month >= 5 && month <= 7) {
                         stats[s.staff].p3Count++;
                         if (s.drawer) stats[s.staff].p3Dist[s.drawer]++;
-                    }
-                    else if (month >= 8 && month <= 10) {
+                    } else if (month >= 8 && month <= 10) {
                         stats[s.staff].p4Count++;
                         if (s.drawer) stats[s.staff].p4Dist[s.drawer]++;
                     }
                 });
 
                 return Object.values(stats)
-                    .filter(stat => stat.p3Count > 0 || stat.p4Count > 0)
                     .map(stat => {
                         stat.p3DistStr = `${stat.p3Dist['雙連']}/${stat.p3Dist['士林']}/${stat.p3Dist['石牌']}/${stat.p3Dist['北投']}`;
-                        let p3Base = stat.p3Count * 500;
-                        if (stat.p3Count >= 20) { stat.p3Tier = 'green'; stat.p3Rev = Math.round(p3Base * 0.85); }
-                        else if (stat.p3Count >= 10) { stat.p3Tier = 'blue'; stat.p3Rev = Math.round(p3Base * 0.9); }
-                        else { stat.p3Tier = 'normal'; stat.p3Rev = p3Base; }
+                        if (stat.p3Count >= 20) { stat.p3Tier = 'green'; stat.p3Rev = stat.p3Count * 680; }
+                        else if (stat.p3Count >= 10) { stat.p3Tier = 'blue'; stat.p3Rev = stat.p3Count * 720; }
+                        else { stat.p3Tier = 'normal'; stat.p3Rev = stat.p3Count * 800; }
 
                         stat.p4DistStr = `${stat.p4Dist['雙連']}/${stat.p4Dist['士林']}/${stat.p4Dist['石牌']}/${stat.p4Dist['北投']}`;
-                        let p4Base = stat.p4Count * 500;
-                        if (stat.p4Count >= 20) { stat.p4Tier = 'green'; stat.p4Rev = Math.round(p4Base * 0.85); }
-                        else if (stat.p4Count >= 10) { stat.p4Tier = 'blue'; stat.p4Rev = Math.round(p4Base * 0.9); }
-                        else { stat.p4Tier = 'normal'; stat.p4Rev = p4Base; }
+                        if (stat.p4Count >= 20) { stat.p4Tier = 'green'; stat.p4Rev = stat.p4Count * 680; }
+                        else if (stat.p4Count >= 10) { stat.p4Tier = 'blue'; stat.p4Rev = stat.p4Count * 720; }
+                        else { stat.p4Tier = 'normal'; stat.p4Rev = stat.p4Count * 800; }
 
                         return {
                             name: stat.name,
@@ -637,219 +423,187 @@
                     .sort((a, b) => (b.p3Count + b.p4Count) - (a.p3Count + a.p4Count));
             });
 
-            // ====== 我的報表 & 班表列印 邏輯 ======
-            const myShifts = computed(() => {
-                return schedules.value.filter(s => s.staff === printTarget.value).sort((a,b) => new Date(a.date) - new Date(b.date));
-            });
+            const getRowColor = (tier) => {
+                if (tier === 'green') return 'text-emerald-600 font-black';
+                if (tier === 'blue') return 'text-blue-600 font-bold';
+                return 'font-medium';
+            };
 
+            // ====== 班表整合處理 (含週末紅字判定) ======
             const selectedMonthData = computed(() => {
                 if (!printTarget.value || printMonths.value.length === 0) return [];
                 return printMonths.value.sort().map(mStr => {
                     const [y, m] = mStr.split('-');
                     const daysInMonth = new Date(y, m, 0).getDate();
                     const firstDay = new Date(y, m - 1, 1).getDay();
+                    const paddingDays = firstDay === 0 ? 6 : firstDay - 1;
                     const days = [];
                     
-                    // 填補月首空白
-                    for(let i=0; i<firstDay; i++) days.push({ dayNum: '', isCurrent: false });
+                    for(let i=0; i<paddingDays; i++) days.push({ dayNum: '', isCurrent: false });
                     
-                    // 填充當月日期
                     for(let i=1; i<=daysInMonth; i++) {
                         const dStr = `${mStr}-${String(i).padStart(2,'0')}`;
+                        const dayOfWeek = new Date(y, m - 1, i).getDay();
+                        const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+
                         const shift = schedules.value.find(s => s.staff === printTarget.value && s.date === dStr);
-                        
-                        // 判斷是否為 2026 特殊連假
+                        const customEventName = customEvents.value[dStr] ? customEvents.value[dStr].name : '';
                         const isHoliday = !!holidays2026[dStr];
                         const holidayName = isHoliday ? holidays2026[dStr] : '';
+                        const isFarmEvent = !!farmEvents[dStr];
+                        const farmEventName = isFarmEvent ? farmEvents[dStr] : '';
+                        const isHopeSquare = !!hopeSquare2026[dStr];
+                        const hopeSquareName = isHopeSquare ? hopeSquare2026[dStr] : '';
 
-                        days.push({ 
-                            dayNum: i, 
-                            isCurrent: true, 
-                            dateStr: dStr, 
-                            shift,
-                            isHoliday,
-                            holidayName
-                        });
+                        days.push({ dayNum: i, isCurrent: true, isWeekend, dateStr: dStr, shift, isHoliday, holidayName, isFarmEvent, farmEventName, customEventName, isHopeSquare, hopeSquareName });
                     }
                     return { label: `${y}年 ${m}月`, days };
                 });
             });
 
-            const collapsedMonths = ref({});
-            const toggleMonth = (label) => {
-                collapsedMonths.value[label] = !collapsedMonths.value[label];
-            };
-
-            const handleDayClick = (d) => {
-                if (!d.isCurrent) return;
-
-                if (d.shift) {
-                    Swal.fire({
-                        title: `編輯排班: ${d.shift.station}`,
-                        text: `日期：${d.dateStr} ${d.isHoliday ? '['+d.holidayName+']' : ''}`,
-                        input: 'text',
-                        inputLabel: '排班備註',
-                        inputValue: d.shift.note || '',
-                        showDenyButton: true,
-                        showCancelButton: true,
-                        confirmButtonText: '<i class="fa-solid fa-save"></i> 儲存備註',
-                        denyButtonText: '<i class="fa-solid fa-trash"></i> 取消此排班',
-                        cancelButtonText: '關閉',
-                        denyButtonColor: '#ef4444',
-                        confirmButtonColor: '#10b981'
-                    }).then(res => {
-                        if (res.isConfirmed) {
-                            db.ref(`schedules/${d.shift.id}`).update({ note: res.value });
-                            Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: '備註已儲存', timer: 1500, showConfirmButton: false });
-                        } else if (res.isDenied) {
-                            Swal.fire({
-                                title: '確定要取消排班嗎？',
-                                text: "從雲端刪除後將無法復原！",
-                                icon: 'warning',
-                                showCancelButton: true,
-                                confirmButtonText: '確定刪除',
-                                cancelButtonText: '保留',
-                                confirmButtonColor: '#ef4444'
-                            }).then(delRes => {
-                                if (delRes.isConfirmed) {
-                                    db.ref(`schedules/${d.shift.id}`).remove();
-                                    db.ref(`sales/${d.shift.id}`).remove();
-                                    Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: '已取消排班', timer: 1500, showConfirmButton: false });
-                                }
-                            });
-                        }
-                    });
-                }
-            };
-
-            const showRecentShiftsText = () => {
-                const targetShifts = schedules.value
-                    .filter(s => s.staff === printTarget.value && s.date >= todayStr.value)
-                    .sort((a,b) => new Date(a.date) - new Date(b.date));
-
-                if (targetShifts.length === 0) {
-                    Swal.fire({ icon: 'info', title: '近期無排班', text: '目前沒有未來的排班紀錄喔！' });
-                    return;
-                }
-
-                const grouped = {};
-                targetShifts.forEach(s => {
-                    const drawer = s.drawer || s.station.substring(0, 2); 
-                    if (!grouped[drawer]) grouped[drawer] = [];
-
-                    const dateObj = new Date(s.date);
-                    const m = dateObj.getMonth() + 1;
-                    const d = dateObj.getDate();
-                    const day = ['日','一','二','三','四','五','六'][dateObj.getDay()];
-                    grouped[drawer].push(`${m}/${d}（${day}）`);
-                });
-
-                let text = '';
-                let isFirst = true;
-                for (const [drawer, dates] of Object.entries(grouped)) {
-                    if (isFirst) {
-                        text += `👍近期${drawer}站時間：\n`;
-                        isFirst = false;
-                    } else {
-                        text += `\n${drawer}站\n`;
-                    }
-                    dates.forEach(d => text += `${d}\n`);
-                }
-                text += `\n🤩🤩`;
-
+            // ====== 編輯器 A：特殊事件 ======
+            const openEditorA = (dateStr) => {
+                const existingEvent = customEvents.value[dateStr]?.name || '';
                 Swal.fire({
-                    title: '近期出攤文案 (可直接複製)',
-                    html: `<textarea id="copyTextarea" class="w-full h-56 p-3 border rounded-lg text-sm font-sans focus:ring-2 focus:ring-emerald-400 outline-none resize-none bg-slate-50">${text}</textarea>`,
+                    title: `📌 設定 ${dateStr} 特殊事件`,
+                    input: 'text',
+                    inputValue: existingEvent,
+                    inputPlaceholder: '輸入活動名稱 (例如：體驗營、補班...)',
                     showCancelButton: true,
-                    confirmButtonText: '<i class="fa-regular fa-copy"></i> 複製文案',
-                    cancelButtonText: '關閉',
-                    confirmButtonColor: '#10b981'
+                    showDenyButton: !!existingEvent,
+                    confirmButtonText: '💾 儲存',
+                    denyButtonText: '🗑️ 移除事件',
+                    cancelButtonText: '取消',
+                    confirmButtonColor: '#4f46e5',
+                    denyButtonColor: '#ef4444'
                 }).then(res => {
                     if (res.isConfirmed) {
-                        const copyText = document.getElementById("copyTextarea");
-                        copyText.select();
-                        document.execCommand("copy");
-                        Swal.fire({toast:true, position:'top-end', icon:'success', title:'已成功複製到剪貼簿！', timer: 1500, showConfirmButton: false});
+                        if (res.value.trim()) {
+                            db.ref(`customEvents/${dateStr}`).set({ name: res.value.trim() });
+                        } else {
+                            db.ref(`customEvents/${dateStr}`).remove();
+                        }
+                    } else if (res.isDenied) {
+                        db.ref(`customEvents/${dateStr}`).remove();
                     }
                 });
             };
 
-            const saveInlineReport = (shift) => {
-                const amtInput = document.getElementById('amt-' + shift.id);
-                const noteInput = document.getElementById('note-' + shift.id);
-                if (amtInput || noteInput) {
-                    const amount = amtInput ? amtInput.value : '';
-                    const note = noteInput ? noteInput.value : '';
-                    db.ref(`sales/${shift.id}`).set({
-                        amount: amount,
-                        note: note,
-                        updatedAt: new Date().toISOString()
-                    });
-                    Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: '已儲存', timer: 1500, showConfirmButton: false });
-                }
+            // ====== 編輯器 B：編輯班表 (備註/請假/刪除) ======
+            const openEditorB = (shift) => {
+                Swal.fire({
+                    title: `🛠 編輯班表 - ${shift.station}`,
+                    html: `
+                        <div class="text-left text-sm mt-4">
+                            <label class="block font-bold mb-2 text-slate-700">✍️ 班表備註 (將顯示於日曆)：</label>
+                            <input id="swal-note" class="w-full border-2 p-3 rounded-lg mb-4 bg-slate-50 focus:border-indigo-500 outline-none font-bold text-slate-700" value="${shift.note || ''}" placeholder="例如：設備維護、下午到...">
+                            <label class="block font-bold mb-2 text-slate-700">🚦 出勤狀態切換：</label>
+                            <select id="swal-status" class="w-full border-2 p-3 rounded-lg bg-slate-50 focus:border-indigo-500 outline-none font-bold text-slate-700 cursor-pointer">
+                                <option value="normal" ${shift.status !== 'leave' ? 'selected' : ''}>🟢 正常出勤</option>
+                                <option value="leave" ${shift.status === 'leave' ? 'selected' : ''}>🔴 設定為請假</option>
+                            </select>
+                        </div>
+                    `,
+                    showCancelButton: true,
+                    showDenyButton: true,
+                    confirmButtonColor: '#059669', 
+                    denyButtonColor: '#dc2626', 
+                    confirmButtonText: '<i class="fa-solid fa-floppy-disk"></i> 儲存',
+                    denyButtonText: '<i class="fa-solid fa-trash"></i> 刪除此班',
+                    cancelButtonText: '取消',
+                    preConfirm: () => {
+                        return {
+                            note: document.getElementById('swal-note').value.trim(),
+                            status: document.getElementById('swal-status').value
+                        }
+                    }
+                }).then(res => {
+                    if (res.isConfirmed) {
+                        db.ref(`schedules/${shift.id}`).update({
+                            note: res.value.note,
+                            status: res.value.status
+                        });
+                    } else if (res.isDenied) {
+                        db.ref(`schedules/${shift.id}`).remove();
+                    }
+                });
             };
 
-            const getComparisonColorClass = (staffName) => {
-                if (!staffName) return '';
-                if (staffName === compareList.value[0]) return 'hl-red';
-                if (staffName === compareList.value[1]) return 'hl-yellow';
-                if (staffName === compareList.value[2]) return 'hl-green';
-                if (staffName === compareList.value[3]) return 'hl-blue';
-                return '';
-            };
-
-            const getRowColor = (tier) => {
-                if (tier === 'green') return 'bg-emerald-50 text-emerald-700';
-                if (tier === 'blue') return 'bg-blue-50 text-blue-700';
-                return '';
-            };
-
-            const genQR = () => {
-                const q1 = document.getElementById("qrcode1");
-                const q2 = document.getElementById("qrcode2");
-                if (q1) q1.innerHTML = "";
-                if (q2) q2.innerHTML = "";
-                
-                if (qrUrl1.value && q1) {
-                    new QRCode(q1, { text: qrUrl1.value, width: 80, height: 80, colorDark: "#1e293b", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.L });
-                }
-                if (qrUrl2.value && q2) {
-                    new QRCode(q2, { text: qrUrl2.value, width: 80, height: 80, colorDark: "#1e293b", colorLight: "#ffffff", correctLevel: QRCode.CorrectLevel.L });
-                }
+            // ====== 快速新增排班 ======
+            const openAddShift = (dateStr) => {
+                Swal.fire({
+                    title: `➕ 新增排班`,
+                    html: `
+                        <div class="text-left text-sm mt-4">
+                            <div class="bg-indigo-50 text-indigo-800 p-3 rounded-lg mb-4 font-bold border border-indigo-100 flex justify-between">
+                                <span>📅 ${dateStr}</span>
+                                <span>👤 ${printTarget.value}</span>
+                            </div>
+                            <label class="block font-bold mb-2 text-slate-700">📍 站點名稱：</label>
+                            <input id="swal-add-station" class="w-full border-2 p-3 rounded-lg mb-4 bg-slate-50 focus:border-indigo-500 outline-none font-bold" placeholder="輸入站點 (如: 雙連一)">
+                            <label class="block font-bold mb-2 text-slate-700">✍️ 備註 (選填)：</label>
+                            <input id="swal-add-note" class="w-full border-2 p-3 rounded-lg bg-slate-50 focus:border-indigo-500 outline-none" placeholder="輸入備註...">
+                        </div>
+                    `,
+                    showCancelButton: true,
+                    confirmButtonColor: '#059669',
+                    confirmButtonText: '確定新增',
+                    cancelButtonText: '取消',
+                    preConfirm: () => {
+                        const station = document.getElementById('swal-add-station').value.trim();
+                        if (!station) Swal.showValidationMessage('站點名稱不可空白');
+                        return { station, note: document.getElementById('swal-add-note').value.trim() }
+                    }
+                }).then(res => {
+                    if (res.isConfirmed) {
+                        const id = Math.random().toString(36).slice(2);
+                        const station = res.value.station;
+                        let drawerKey = ['雙連', '士林', '石牌', '北投'].find(k => station.includes(k)) || '';
+                        
+                        db.ref(`schedules/${id}`).set({
+                            id, 
+                            date: dateStr, 
+                            drawer: drawerKey, 
+                            station: station, 
+                            subStation: station.replace(drawerKey, ''), 
+                            staff: printTarget.value,
+                            note: res.value.note,
+                            status: 'normal'
+                        });
+                    }
+                });
             };
 
             const printNow = () => { window.print(); };
 
             onMounted(() => {
+                // 讀取班表
                 db.ref('schedules').on('value', snap => {
                     isDBConnected.value = true;
                     if (snap.exists()) {
                         const data = snap.val();
                         schedules.value = Object.keys(data).map(k => data[k]);
-                    } else if (csvInput.value) {
-                        processCSV();
+                    } else {
+                        schedules.value = [];
                     }
                 });
 
-                db.ref('sales').on('value', snap => {
+                // 讀取自訂特殊事件
+                db.ref('customEvents').on('value', snap => {
                     if (snap.exists()) {
-                        salesData.value = snap.val();
+                        customEvents.value = snap.val();
                     } else {
-                        salesData.value = {};
+                        customEvents.value = {};
                     }
                 });
             });
 
             return {
-                csvInput, showInput, currentView, processCSV, navClass, truncateName,
-                matrixHeaders, matrixGroups, todayStr, scrollToToday, editEmptyCell, editShiftCard,
-                compareList, uniqueStaffList, getComparisonColorClass,
-                analysisStats, getRowColor,
-                printTarget, printMonths, allMonths, contactInfo, qrUrl1, qrUrl2, 
-                selectedMonthData, myShifts, saveInlineReport, genQR, printNow,
-                isDBConnected, salesData,
-                collapsedMonths, toggleMonth, handleDayClick, showRecentShiftsText,
-                showSidebar
+                csvInput, showInput, currentView, processCSV, navClass,
+                uniqueStaffList, analysisStats, getRowColor,
+                printTarget, printMonths, allMonths, contactInfo, 
+                selectedMonthData, printNow, isDBConnected,
+                showSidebar, openEditorA, openEditorB, openAddShift
             };
         }
     }).mount('#app');
